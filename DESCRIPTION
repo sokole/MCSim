@@ -1,0 +1,12 @@
+Package: MCSim
+Title: Metacommunity simulations for ecologists
+Version: 0.3
+Authors@R: 'Eric Sokol <sokole@gmail.com> [aut, cre]'
+Description: This package contains functions for lottery sampling type
+    metacommunity simulations.
+Depends:
+    plyr,
+    vegan,
+    vegetarian
+License: GPL-3
+LazyData: true
