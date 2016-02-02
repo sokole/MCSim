@@ -17,7 +17,7 @@
 #' \url{http://cran.r-project.org/web/packages/untb/index.html}
 #' 
 #' @seealso \code{\link[untb]{count}}
-#' 
+#'
 as.count <- function (a, add = ""){
   if (is.count(a)) {
     out <- a
