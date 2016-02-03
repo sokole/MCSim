@@ -50,7 +50,7 @@ fn.lambda <- function(
 #' 
 #' @usage fn.lottery.recruit(vect.recruitment.weights, vect.taxa.list, scalar.JL)
 #' 
-#' @param vect.recruitment.weights
+#' @param vect.recruitment.weights A vector of recruitment weights.
 #' @param vect.taxa.list A vector of characters (or character strings) that is a 
 #' list of species names.
 #' @param scalar.JL Size of the assemblage (i.e., number of individuals to recruit).

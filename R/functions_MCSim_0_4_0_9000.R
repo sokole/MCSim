@@ -44,8 +44,6 @@
 #' Jost, L. 2007. Partitioning diversity into independent alpha and beta components. 
 #' Ecology 88:2427--2439.
 #' 
-#' @export
-#' 
 fn.metaSIM<-function(
   landscape = NA,
   scenario.ID = NA, 
@@ -210,7 +208,7 @@ fn.metaSIM<-function(
 #' fn.make.landscape
 #' 
 #' @title make a simulation landscape
-
+#' 
 fn.make.landscape<-function(
   # -------------------------------
   # -------------------------------
@@ -371,8 +369,6 @@ fn.make.landscape<-function(
 #' in the landscape.
 #' 
 #' @seealso \link{fn.lottery.recruit}, \link{fn.make.landscape}, \link{fn.metaSIM}
-#' 
-#' @export
 #' 
 fn.recruit.Jt <- function(
   # calls calculates R.t (expected pool) to calculate extant pool
