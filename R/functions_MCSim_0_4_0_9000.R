@@ -11,7 +11,7 @@
 #' settings, diversity partitioning outcomes, and variation partitioning outcomes.
 #' 
 #' @usage 
-#' fn.metaSIM3(landscape)
+#' fn.metaSIM(landscape)
 #' 
 #' @param landscape landscape list from \link{fn.make.landscape3}
 #' @param scenario.ID see \link{fn.metaSIM}
