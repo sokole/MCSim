@@ -4,7 +4,7 @@
 \alias{fn.metaSIM}
 \title{A metacommunity simulation for ecologists}
 \usage{
-fn.metaSIM3(landscape)
+fn.metaSIM(landscape)
 }
 \arguments{
 \item{landscape}{landscape list from \link{fn.make.landscape3}}
