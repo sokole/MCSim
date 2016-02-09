@@ -2,4 +2,7 @@
 
 export(fn.lambda)
 export(fn.lottery.recruit)
+export(fn.make.landscape)
+export(fn.metaSIM)
+export(fn.recruit.Jt)
 export(fn.set.regional.species.pool)

@@ -5,55 +5,20 @@
 #' 
 #' @title A metacommunity simulation for ecologists
 #' 
-#' @description This function is a lottery-based, zero-sum, spatially explicit 
-#' simulation that can include neutral and/or niche-based dynamics.  Results are 
-#' written to a .csv file in a SIM_OUTPUT directory.  Output includes parameter 
-#' settings, diversity partitioning outcomes, and variation partitioning outcomes.
-#' 
 #' @usage 
 #' fn.metaSIM(landscape)
 #' 
-#' @param landscape landscape list from \link{fn.make.landscape3}
-#' @param scenario.ID see \link{fn.metaSIM}
-#' @param alpha.fisher see \link{fn.metaSIM}
-#' @param nu see \link{fn.metaSIM}
-#' @param speciation.limit see \link{fn.metaSIM}
-#' @param n.timestep see \link{fn.metaSIM}
-#' @param SWM.slope see \link{fn.metaSIM}
-#' @param trait.dispersal.median see \link{fn.metaSIM}
-#' @param trait.dispersal.range see \link{fn.metaSIM}
-#' @param trait.Ef.sd see \link{fn.metaSIM}
-#' @param save.sim see \link{fn.metaSIM}
-#' @param output.dir.path see \link{fn.metaSIM}
-#' @param \dots other parameters to be passed to internal functions
-#' 
-#' @seealso \link{fn.metaSIM}
-#' 
-#' @references 
-#' Chao, A., C. H. Chiu, and T. C. Hsieh. 2012. Proposing a resolution to debates on diversity 
-#' partitioning. Ecology 93:2037--2051.
-#' 
-#' Etienne, R. S. 2005. A new sampling formula for neutral biodiversity. Ecology Letters 8:253--260.
-#' 
-#' Gravel, D., C. D. Canham, M. Beaudet, and C. Messier. 2006. Reconciling niche and neutrality: 
-#' the continuum hypothesis. Ecology Letters 9:399--409.
-#' 
-#' Hubbell, S. P. 2001. A unified theory of biodiversity and biogeography. Princeton University 
-#' Press.
-#' 
-#' Jost, L. 2007. Partitioning diversity into independent alpha and beta components. 
-#' Ecology 88:2427--2439.
-#' 
+#' @export
 fn.metaSIM<-function(
   landscape = NA,
   scenario.ID = NA, 
   alpha.fisher = 2,
   nu = 1e-04,
   speciation.limit = NA,
-  JM.limit = 1e5, # may need to put a limit on how many individuals can be in a simulation
+  JM.limit = 1e5, 
   n.timestep = 10,
   SWM.slope = 0,
-  trait.dispersal.median = 1 ,
+  trait.dispersal.median = 1,
   trait.dispersal.range = 0,
   trait.Ef.sd = 0.3,
   save.sim = TRUE, 
@@ -71,7 +36,7 @@ fn.metaSIM<-function(
       JM <- sum(JL)
       n.sites <- length(JL)
       
-      #' -- create regional pool
+      # -- create regional pool
       dat.gamma.t0 <- fn.set.regional.species.pool(n.timestep = n.timestep, 
                                                    nu = nu, 
                                                    speciation.limit = speciation.limit, 
@@ -141,11 +106,11 @@ fn.metaSIM<-function(
                          n.timestep = n.timestep, 
                          taxa.list = taxa.list)
       
-      #'   fn.sim.metadata.archive4(sim.result = sim.result, 
-      #'                            save.sim = save.sim, var.dir = output.dir.path, 
-      #'                            keep.timesteps = keep.timesteps,
-      #'                            q.order=NA,
-      #'                            ...)
+      #   fn.sim.metadata.archive4(sim.result = sim.result, 
+      #                            save.sim = save.sim, var.dir = output.dir.path, 
+      #                            keep.timesteps = keep.timesteps,
+      #                            q.order=NA,
+      #                            ...)
       sim.result.filename<-paste(output.dir.path,"/",sim.result.name,".rda",sep="")
       sim.result.metadata <- data.frame(row.names = sim.result.name, 
                                         scenario.ID = scenario.ID, 
@@ -172,17 +137,17 @@ fn.metaSIM<-function(
                                         Niche.breadth = sim.result$trait.Ef.sd, 
                                         stringsAsFactors = FALSE)
       
-      #' -- check for director
+      # -- check for director
       if(!output.dir.path%in%list.files())  dir.create(output.dir.path)
       
-      #' -- save sim
+      # -- save sim
       if(save.sim) save(sim.result,file=sim.result.filename)
       
-      #' -- check to see if data for other reps from this scenario exist
+      # -- check to see if data for other reps from this scenario exist
       filname.sim.metadata <- paste(output.dir.path, "/sim.metadata_", 
                                     sim.result$scenario.ID, ".csv", sep = "")
       
-      #' -- create new file if none exists, write results to file, otherwise append to existing file
+      # -- create new file if none exists, write results to file, otherwise append to existing file
       if (file.exists(filname.sim.metadata)) {
         dat.sim.metadata <- read.csv(filname.sim.metadata, row.names = 1, 
                                      header = TRUE)
@@ -197,17 +162,17 @@ fn.metaSIM<-function(
       try(detach(landscape$site.info), silent = TRUE)
       try(detach(landscape), silent = TRUE)
       
-      #' -- return results
+      # -- return results
       return(sim.result)
     })
   }
 } 
-#end function
-
 # ---------------------------------------------------------------------------------------
 #' fn.make.landscape
 #' 
 #' @title make a simulation landscape
+#' 
+#' @export
 #' 
 fn.make.landscape<-function(
   # -------------------------------
@@ -369,6 +334,8 @@ fn.make.landscape<-function(
 #' in the landscape.
 #' 
 #' @seealso \link{fn.lottery.recruit}, \link{fn.make.landscape}, \link{fn.metaSIM}
+#' 
+#' @export
 #' 
 fn.recruit.Jt <- function(
   # calls calculates R.t (expected pool) to calculate extant pool

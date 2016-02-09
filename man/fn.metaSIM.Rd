@@ -6,70 +6,7 @@
 \usage{
 fn.metaSIM(landscape)
 }
-\arguments{
-\item{landscape}{landscape list from \link{fn.make.landscape3}}
-
-\item{scenario.ID}{see \link{fn.metaSIM}}
-
-\item{alpha.fisher}{see \link{fn.metaSIM}}
-
-\item{nu}{see \link{fn.metaSIM}}
-
-\item{speciation.limit}{see \link{fn.metaSIM}}
-
-\item{n.timestep}{see \link{fn.metaSIM}}
-
-\item{SWM.slope}{see \link{fn.metaSIM}}
-
-\item{trait.dispersal.median}{see \link{fn.metaSIM}}
-
-\item{trait.dispersal.range}{see \link{fn.metaSIM}}
-
-\item{trait.Ef.sd}{see \link{fn.metaSIM}}
-
-\item{save.sim}{see \link{fn.metaSIM}}
-
-\item{output.dir.path}{see \link{fn.metaSIM}}
-
-\item{\dots}{other parameters to be passed to internal functions}
-}
 \description{
-This function is a lottery-based, zero-sum, spatially explicit 
-simulation that can include neutral and/or niche-based dynamics.  Results are 
-written to a .csv file in a SIM_OUTPUT directory.  Output includes parameter 
-settings, diversity partitioning outcomes, and variation partitioning outcomes.
-}
-\details{
 fn.metaSIM
-}
-\references{
-Chao, A., C. H. Chiu, and T. C. Hsieh. 2012. Proposing a resolution to debates on diversity 
-partitioning. Ecology 93:2037--2051.
-
-Etienne, R. S. 2005. A new sampling formula for neutral biodiversity. Ecology Letters 8:253--260.
-
-Gravel, D., C. D. Canham, M. Beaudet, and C. Messier. 2006. Reconciling niche and neutrality: 
-the continuum hypothesis. Ecology Letters 9:399--409.
-
-Hubbell, S. P. 2001. A unified theory of biodiversity and biogeography. Princeton University 
-Press.
-
-Jost, L. 2007. Partitioning diversity into independent alpha and beta components. 
-Ecology 88:2427--2439.
-
--- create regional pool
-  fn.sim.metadata.archive4(sim.result = sim.result, 
-                           save.sim = save.sim, var.dir = output.dir.path, 
-                           keep.timesteps = keep.timesteps,
-                           q.order=NA,
-                           ...)
--- check for director
--- save sim
--- check to see if data for other reps from this scenario exist
--- create new file if none exists, write results to file, otherwise append to existing file
--- return results
-}
-\seealso{
-\link{fn.metaSIM}
 }
 

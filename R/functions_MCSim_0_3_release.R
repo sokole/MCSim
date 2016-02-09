@@ -23,7 +23,6 @@
 #' neutrality: the continuum hypothesis. Ecology Letters 9:399--409.
 #' 
 #' @export
-#' 
 fn.lambda <- function(
   trait.optimum = .5,
   niche.breadth = 1,
