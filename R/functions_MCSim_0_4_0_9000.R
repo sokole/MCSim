@@ -224,8 +224,8 @@ fn.metaSIM <- function (
                                    sim.result.name, ".rda", sep = "")
       
       # -- summarise site metadata
-      siteinfo.metadata<-select(landscape$site.info, -site.ID)
-      gamma.metadata<-select(dat.gamma.t0, -taxa.list)
+      siteinfo.metadata<-dplyr::select(landscape$site.info, -site.ID)
+      gamma.metadata<-dplyr::select(dat.gamma.t0, -taxa.list)
       sim.result.metadata.wide <- data.frame(
         n.sites = n.sites, 
         n.timestep = n.timestep, 
