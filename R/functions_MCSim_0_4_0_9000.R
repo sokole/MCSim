@@ -8,165 +8,304 @@
 #' @usage 
 #' fn.metaSIM(landscape)
 #' 
+#' @param landscape Landscape object created by function fn.make.landscape()
+#' @param scenario.ID A name for the simulation scenario. All simulations with the same scenario name will have metadata collated in a single .csv file. Default is NA
+#' @param sim.ID A name for this particular simulation. Default will provide a random ID.
+#' @param alpha.fisher User can use Fisher's alpha to seed a simulation's initial regional source pool.
+#' @param nu Probability a novel species will appear in a single recruitment event
+#' @param speciation.limit Set's a limit on the number of novel taxa that can appear in a simulation
+#' @param JM.limit set's an upper limit for the number of individuals in a simulation
+#' @param n.timestep Number of generations in a simulation
+#' @param W.r Dispersal kernel slope
+#' @param save.sim Binary, will save the simulation as a .rda file if TRUE. Default is FALSE.
+#' @param output.dir.path Name of directory to save simulation results and metadata. Default is "SIM_OUTPUT". Simulation will create a sub-directory in the working directory if none exists.
+#' @param trait.dispersal Vector of dispersal traits. Default is NULL
+#' @param trait.dispersal.median Scalar value for dispersal applied to all species if no vector is provided. Default is 1.
+#' @param trait.dispersal.range Range of dispersal values given to species if dispersal traits are randomly assigned.
+#' @param trait.Ef Vector of species' niche positions
+#' @param trait.Ef.sd Vector of species' niche breadths
+#' @param gamma.abund Vector of regional abundances, can be used to seed a simulation
+#' @param J.t0 Site by species data.table or matrix that can be used to seed a simulation
+#' @param taxa.list A character vector of names for species
+#' 
 #' @export
-fn.metaSIM<-function(
-  landscape = NA,
-  scenario.ID = NA, 
-  alpha.fisher = 2,
-  nu = 1e-04,
-  speciation.limit = NA,
-  JM.limit = 1e5, 
-  n.timestep = 10,
-  SWM.slope = 0,
-  trait.dispersal.median = 1,
-  trait.dispersal.range = 0,
-  trait.Ef.sd = 0.3,
-  save.sim = TRUE, 
-  output.dir.path = "SIM_OUTPUT", 
-  ...
-){
-  if(class(landscape)!='list'){
-    print('This simulation needs a landscape!')
-  }else{
-    try({  
-      # --------------------------------------------------------
-      # -- calculate JM from landscape
-      # --------------------------------------------------------
-      attach(landscape$site.info)
-      JM <- sum(JL)
-      n.sites <- length(JL)
+fn.metaSIM <- function (
+  # -- unchanged vars
+  landscape = NA, 
+  scenario.ID = NA,
+  sim.ID = NA,
+  alpha.fisher = 1, 
+  nu = 1e-04, 
+  speciation.limit = 0, 
+  JM.limit = 1e+05, 
+  n.timestep = 10, 
+  W.r = 0, 
+  save.sim = FALSE, 
+  output.dir.path = "SIM_OUTPUT",
+  
+  # -- New or edited vars
+  trait.dispersal = NULL, # a vector of dispersal traits
+  trait.dispersal.median = 1,# or set a median and range of dispersals
+  trait.dispersal.range = 0, 
+  
+  trait.Ef = NULL,
+  trait.Ef.sd = NULL, #NULL creates a nearly neutral simulation
+  
+  gamma.abund = NULL,
+  J.t0 = NULL,
+  taxa.list = NULL,
+  ...) {
+  if (class(landscape) != "list") {
+    print("This simulation needs a landscape!")
+  } else {
+    try({
+      require(reshape2)
+      require(dplyr)
       
-      # -- create regional pool
+      JM <- sum(landscape$site.info$JL)
+      n.sites <- length(landscape$site.info$JL)
+      
+      if(!is.null(J.t0)){
+        gamma.abund<-colMeans(J.t0)
+        
+        J.t0.RAs<-J.t0/rowSums(J.t0)
+        J.t0 <- round(J.t0.RAs * landscape$site.info$JL, 0)
+        
+        if(!is.null(taxa.list)){
+          # -- if taxa.list is provided, use it to name species
+          try({names(J.t0) <- taxa.list})
+        }else if(!is.numeric(names(J.t0))){
+          # -- if no taxa.list, use names from J.t0
+          try({taxa.list <- names(J.t0)})
+        }else{
+          # -- if names in J.t0 are numierc, add 'spp' as a prefix
+          names(J.t0) <- paste0('spp',1:ncol(J.t0))
+          taxa.list <- names(J.t0)
+        }
+      }
+      
       dat.gamma.t0 <- fn.set.regional.species.pool(n.timestep = n.timestep, 
                                                    nu = nu, 
                                                    speciation.limit = speciation.limit, 
-                                                   JM = ifelse(JM>JM.limit,JM.limit,JM), 
+                                                   JM = ifelse(JM > JM.limit, JM.limit, JM), 
                                                    alpha.fisher = alpha.fisher, 
-                                                   trait.dispersal.median = trait.dispersal.median, 
-                                                   trait.dispersal.range = trait.dispersal.range)
-      taxa.list <- as.character(dat.gamma.t0$taxa.list)
-      d.temp <- expand.grid(Ef = Ef, stringsAsFactors = FALSE, 
-                            trait.Ef = dat.gamma.t0$trait.Ef)
-      d.temp$Ef.specificity <- Ef.specificity
-      lambda.Ef.siteBYspp <- matrix(data = mapply(FUN = fn.lambda, 
-                                                  trait.optimum = d.temp$trait.Ef, Ef = d.temp$Ef, Ef.specificity = d.temp$Ef.specificity, 
-                                                  MoreArgs = list(niche.breadth = trait.Ef.sd)), nrow = n.sites, 
-                                    ncol = length(taxa.list), byrow = FALSE)
-      lambda.Ef.siteBYspp <- lambda.Ef.siteBYspp/rowSums(lambda.Ef.siteBYspp)
+                                                   trait.dispersal = trait.dispersal, # a vector of dispersal traits
+                                                   trait.dispersal.median = trait.dispersal.median,# or set a median and range of dispersals
+                                                   trait.dispersal.range = trait.dispersal.range, 
+                                                   
+                                                   gamma.abund = gamma.abund,
+                                                   
+                                                   Ef.min = min(landscape$site.info$Ef)-abs(0.01*min(landscape$site.info$Ef)), 
+                                                   Ef.max = max(landscape$site.info$Ef)+abs(0.01*max(landscape$site.info$Ef)),
+
+                                                   trait.Ef = trait.Ef,
+                                                   trait.Ef.sd = trait.Ef.sd,
+                                                   taxa.list = taxa.list)
       
+      # -- extend J.t0 to include possible new species 
+      taxa.list <- as.character(dat.gamma.t0$taxa.list)
+      if(!is.null(J.t0)){
+        if(length(taxa.list)>ncol(J.t0)){
+          J.t0[, c( (ncol(J.t0)+1):length(taxa.list) )]<-0
+          names(J.t0)<-taxa.list
+        }
+      }
+      
+      # -- combine traits and haibtats in a long data table
+      d.temp <- data.frame(
+        site.id = c(1:length(landscape$site.info$Ef.specificity)),
+        spp.id = rep(dat.gamma.t0$taxa.list, each = length(landscape$site.info$Ef)),
+        expand.grid(Ef = landscape$site.info$Ef, 
+                    stringsAsFactors = FALSE, 
+                    trait.Ef = dat.gamma.t0$trait.Ef),
+        niche.breadth = rep(dat.gamma.t0$trait.Ef.sd, each = length(landscape$site.info$Ef)),
+        Ef.specificity = landscape$site.info$Ef.specificity #from landscape
+      )
+      
+      # -- estimate lottery weights based on habitat preferences, niche breadths, and site habitat chcaracteristics
+      lambda.Ef.siteBYspp <- matrix(data = mapply(FUN = fn.lambda, 
+                                                  trait.optimum = d.temp$trait.Ef, 
+                                                  Ef = d.temp$Ef, 
+                                                  Ef.specificity = d.temp$Ef.specificity,
+                                                  niche.breadth = d.temp$niche.breadth),
+                                    nrow = n.sites, 
+                                    ncol = length(taxa.list), 
+                                    byrow = FALSE)
+      
+      lambda.Ef.siteBYspp <- lambda.Ef.siteBYspp/rowSums(lambda.Ef.siteBYspp)
       R.probs.t0 <- lambda.Ef.siteBYspp * (rep(1, n.sites) %o% 
                                              dat.gamma.t0$regional.RA)
       R.probs.t0 <- R.probs.t0/rowSums(R.probs.t0)
       R.probs.list <- as.list(data.frame(t(R.probs.t0)))
       
-      J.t0 <- data.frame(row.names = NULL, t(mapply(FUN = fn.lottery.recruit, 
-                                                    vect.recruitment.weights = R.probs.list, scalar.JL = as.list(JL), 
-                                                    MoreArgs = list(vect.taxa.list = taxa.list))))
+      # ---------------------------------
+      # -- lottery to initiate simulation at time t0
+      # -------------
+      if(is.null(J.t0)){
+        J.t0 <- data.frame(row.names = NULL, t(mapply(FUN = fn.lottery.recruit, 
+                                                      vect.recruitment.weights = R.probs.list, 
+                                                      scalar.JL = as.list(landscape$site.info$JL), 
+                                                      MoreArgs = list(vect.taxa.list = taxa.list))))
+      }
+      
+      # ---------------------------------
+      # -- initialize J list for time 0
+      # -------------
       J <- list()
       J[[1]] <- J.t0
       J.t.minus.1 <- J.t0
       
-      # ----------------------------------------------------------------------
-      # loop for generational turnover in metacommunity
-      # ----------------------------------------------------------------------
+      # -- make J a long matrix
+      suppressMessages({
+        J.long<-data.frame(
+          timestep=1,
+          melt(as.matrix(J.t0),
+               value.name = 'count'))
+      })
+      names(J.long)<-c('timestep','site','spp','count')
+      
+      # ---------------------------------
+      # -- loterry recruits for all subsequent time steps
+      # -------------
       for (t.index in 2:n.timestep) {
-        J.t <- fn.recruit.Jt(mat.geodist=landscape$dist.mat,
-                                   nu=nu,
-                                   SWM.slope=SWM.slope,
-                                   J.t.minus.1=J.t.minus.1,
-                                   taxa.list=taxa.list,
-                                   traits.Ef=dat.gamma.t0$trait.Ef,
-                                   trait.Ef.sd=trait.Ef.sd,
-                                   traits.dispersal=dat.gamma.t0$trait.dispersal,
-                                   m=m,
-                                   Ef=Ef,
-                                   Ef.specificity=Ef.specificity,
-                                   JL=JL)
+        J.t <- fn.recruit.Jt(mat.geodist = landscape$dist.mat, 
+                             nu = nu, 
+                             SWM.slope = W.r, 
+                             J.t.minus.1 = J.t.minus.1, 
+                             taxa.list = taxa.list, 
+                             traits.Ef = dat.gamma.t0$trait.Ef, 
+                             trait.Ef.sd = dat.gamma.t0$trait.Ef.sd, 
+                             traits.dispersal = dat.gamma.t0$trait.dispersal, 
+                             m = landscape$site.info$m, 
+                             Ef = landscape$site.info$Ef, 
+                             Ef.specificity = landscape$site.info$Ef.specificity, 
+                             JL = landscape$site.info$JL)
+        
+        # -- keep spp counts in long format
+        suppressMessages({
+          J.long.temp<-data.frame(
+            timestep=t.index,
+            melt(as.matrix(J.t),
+                 value.name = 'count')
+          )
+        })
+        names(J.long.temp)<-c('timestep','site','spp','count')
+        
+        J.long<-rbind(J.long,
+                      J.long.temp)
+        
         J[[t.index]] <- J.t
         J.t.minus.1 <- J.t
         print(paste("Timestep:", t.index))
       }
       
-      # ----------------------------------------------------------------------
-      sim.result.name <- paste("SIM_", scenario.ID, "_", format(Sys.time(), 
-                                                                "%Y%m%d_%H%M%S"), "_", trunc(runif(1, 1e+05, 999999)), 
-                               sep = "")
+      # ---------------------------------
+      # -- name sim result
+      # -------------
+      if(is.na(sim.ID)){
+        sim.result.name <- paste("SIM_", scenario.ID, "_", 
+                                 format(Sys.time(), 
+                                        "%Y%m%d_%H%M%S"), 
+                                 "_", 
+                                 trunc(runif(1, 1e+05, 999999)), 
+                                 sep = "")
+      }else{
+        sim.result.name <- sim.ID
+      }
       
+      # ---------------------------------
+      # -- collate info into sim.result
+      # -------------
       sim.result <- list(scenario.ID = scenario.ID, 
                          sim.result.name = sim.result.name, 
-                         alpha.fisher = alpha.fisher, 
-                         nu.sim = nu, 
-                         trait.Ef.sd = trait.Ef.sd, 
-                         trait.dispersal = dat.gamma.t0$trait.dispersal, 
-                         trait.Ef = dat.gamma.t0$trait.Ef, 
                          landscape = landscape, 
                          dat.gamma.t0 = dat.gamma.t0, 
-                         SWM.slope = SWM.slope, 
-                         J = J, 
-                         n.timestep = n.timestep, 
-                         taxa.list = taxa.list)
+                         W.r = W.r, 
+                         J.long = J.long)
       
-      #   fn.sim.metadata.archive4(sim.result = sim.result, 
-      #                            save.sim = save.sim, var.dir = output.dir.path, 
-      #                            keep.timesteps = keep.timesteps,
-      #                            q.order=NA,
-      #                            ...)
-      sim.result.filename<-paste(output.dir.path,"/",sim.result.name,".rda",sep="")
-      sim.result.metadata <- data.frame(row.names = sim.result.name, 
-                                        scenario.ID = scenario.ID, 
-                                        sim.ID = sim.result.name, 
-                                        sim.result.filename = sim.result.filename, 
-                                        n.sites = n.sites, 
-                                        n.timestep = n.timestep, 
-                                        alpha.fisher = alpha.fisher, 
-                                        nu.sim = nu, 
-                                        JM = JM, 
-                                        JL.mean = mean(JL), 
-                                        JL.sd = sd(JL), 
-                                        m.mean = mean(m), 
-                                        m.sd = sd(m), 
-                                        IL.mean = mean(IL), 
-                                        IL.sd = sd(IL), 
-                                        SWM.slope = SWM.slope, 
-                                        Ef.mean = mean(Ef), 
-                                        Ef.sd = sd(Ef), 
-                                        Ef.specificity.mean = mean(Ef.specificity), 
-                                        Ef.specificity.sd = sd(Ef.specificity), 
-                                        Tr.disp.mean = mean(dat.gamma.t0$trait.dispersal), 
-                                        Tr.disp.sd = sd(dat.gamma.t0$trait.dispersal), 
-                                        Niche.breadth = sim.result$trait.Ef.sd, 
-                                        stringsAsFactors = FALSE)
+      sim.result.filename <- paste(output.dir.path, "/", 
+                                   sim.result.name, ".rda", sep = "")
       
-      # -- check for director
-      if(!output.dir.path%in%list.files())  dir.create(output.dir.path)
+      # -- summarise site metadata
+      siteinfo.metadata<-select(landscape$site.info, -site.ID)
+      gamma.metadata<-select(dat.gamma.t0, -taxa.list)
+      sim.result.metadata.wide <- data.frame(
+        n.sites = n.sites, 
+        n.timestep = n.timestep, 
+        alpha.fisher = alpha.fisher, 
+        nu.sim = nu, 
+        JM = JM, 
+        W.r = W.r,
+        stringsAsFactors = FALSE)
       
-      # -- save sim
-      if(save.sim) save(sim.result,file=sim.result.filename)
+      metadata.long<-data.frame(
+        sim.ID = sim.result.name, 
+        rbind(
+          data.frame(
+            param.name=names(sim.result.metadata.wide),
+            param.stat='fixed_value',
+            param.stat.val=t(sim.result.metadata.wide),
+            row.names=NULL
+          ),
+          data.frame(
+            param.name=names(siteinfo.metadata),
+            param.stat='mean',
+            param.stat.val=t(dplyr::summarise_each(siteinfo.metadata, funs(mean))),
+            row.names=NULL
+          ),
+          data.frame(
+            param.name=names(siteinfo.metadata),
+            param.stat='sd',
+            param.stat.val=t(dplyr::summarise_each(siteinfo.metadata, funs(sd))),
+            row.names=NULL
+          ),
+          data.frame(
+            param.name=names(gamma.metadata),
+            param.stat='mean',
+            param.stat.val=t(dplyr::summarise_each(gamma.metadata, funs(mean))),
+            row.names=NULL
+          ),
+          data.frame(
+            param.name=names(gamma.metadata),
+            param.stat='sd',
+            param.stat.val=t(dplyr::summarise_each(gamma.metadata, funs(sd))),
+            row.names=NULL
+          ))
+      )
       
-      # -- check to see if data for other reps from this scenario exist
+      # -- check for output directory, create if necessary
+      if (!output.dir.path %in% list.files()) 
+        dir.create(output.dir.path)
+      
+      # -- save sim if requested
+      if (save.sim) 
+        save(sim.result, file = sim.result.filename)
       filname.sim.metadata <- paste(output.dir.path, "/sim.metadata_", 
                                     sim.result$scenario.ID, ".csv", sep = "")
       
-      # -- create new file if none exists, write results to file, otherwise append to existing file
+      # -- save metadata
       if (file.exists(filname.sim.metadata)) {
-        dat.sim.metadata <- read.csv(filname.sim.metadata, row.names = 1, 
-                                     header = TRUE)
+        dat.sim.metadata <- read.csv(filname.sim.metadata, 
+                                     header = TRUE,
+                                     stringsAsFactors = FALSE)
         if (!sim.result.name %in% row.names(dat.sim.metadata)) {
-          dat.sim.metadata <- rbind(dat.sim.metadata, sim.result.metadata)
-          write.csv(dat.sim.metadata, filname.sim.metadata)
+          dat.sim.metadata <- rbind(dat.sim.metadata, 
+                                    metadata.long)
+          write.csv(dat.sim.metadata, 
+                    filname.sim.metadata,
+                    row.names = FALSE)
         }
-      }else {
-        write.csv(sim.result.metadata, filname.sim.metadata)
+      } else {
+        write.csv(metadata.long, 
+                  filname.sim.metadata,
+                  row.names = FALSE)
       }
-      
       try(detach(landscape$site.info), silent = TRUE)
       try(detach(landscape), silent = TRUE)
-      
-      # -- return results
       return(sim.result)
     })
   }
-} 
+}
 # ---------------------------------------------------------------------------------------
 #' fn.make.landscape
 #' 
@@ -437,4 +576,149 @@ fn.recruit.Jt <- function(
       MoreArgs=list(vect.taxa.list=taxa.list)
     )))
   return(J.t1)
+}
+
+# --------------------------------------------------------------------------------------------
+#' fn.set.regional.species.pool
+#' 
+#' @title Initialize species pool for fn.metaSIM
+#' 
+#' @description Initialize species pool for fn.metaSIM
+#' 
+#' @usage 
+#' fn.set.regional.species.pool(alpha.fisher = 1)
+#' fn.set.regional.species.pool(gamma.abund = c(.9, .4, .2, .3))
+
+#' @param alpha.fisher Fisher's alpha used to initiate the simulation.
+#' @param n.timestep Number of generations (time steps) in the simulation, can affect number of novel species. Default is 0.
+#' @param nu Scalar value representing the probability that a novel species 
+#' is recruited.  Hubbell's \dQuote{speciation rate}.
+#' @param speciation.limit A limit to the number of novel species that can occur 
+#' in the simulation, default is 0.  
+#' @param JM Total number of individuals in the metacommunity.
+#' @param gamma.abund Vector of relative abundances or counts used to set regional species pool RAs
+#' @param trait.dispersal Vector of trait scores for dispersal, should be in range 0 to 1, or NULL 
+#' @param trait.dispersal.median Median value for species' dispersal trait values.
+#' @param trait.dispersal.range Range in variation allowed for species' trait 
+#' dispersal values.
+#' @param Ef.min Min limit for environmental gradient
+#' @param Ef.max Max limit for environmental gradient
+#' @param trait.Ef Vector or value of niche positions for species in regional pool
+#' @param trait.Ef.sd Vector or value of niche breadths
+#' @param taxa.list.prefix A character string to use as a prefix in species' names.
+#' @param taxa.list.prefix Text appended as prefix to species names to prevent errors for column names when site by species matrices are created. Default is "spp".
+#' 
+#' @export
+#' 
+fn.set.regional.species.pool <- function ( alpha.fisher = 1,
+                                           n.timestep = 0, 
+                                           nu = 0.001, 
+                                           speciation.limit = 0, 
+                                           JM = 1000, 
+                                           
+                                           gamma.abund = NULL,
+                                           
+                                           trait.dispersal = NULL, # a vector of dispersal traits
+                                           trait.dispersal.median = 1,# or set a median and range of dispersals
+                                           trait.dispersal.range = 0, 
+                                           
+                                           Ef.min = 0, 
+                                           Ef.max = 1,
+                                           
+                                           trait.Ef = NULL,
+                                           trait.Ef.sd = NULL,
+                                           
+                                           taxa.list = NULL,
+                                           taxa.list.prefix = "spp"){
+  
+  # -- set regional RAs if given, otherwise sample dist based on alpha.fisher
+  if(is.array(gamma.abund)|is.vector(gamma.abund)){
+    alpha.fisher <- NA
+  } else {
+    # -- default alpha.fisher to 1 when no gamma.abund is provided
+    if(is.na(alpha.fisher)) {alpha.fisher <- 1}
+    gamma.abund <- fisher.ecosystem(N = JM, nmax = JM, alpha = alpha.fisher)
+  }
+  
+  # -- add columsn for potential new species
+  if (is.na(speciation.limit)) {
+    n.new.spp <- length(gamma.abund)
+  } else {
+    n.new.spp <- nu * n.timestep * JM
+    if (n.new.spp > speciation.limit) 
+      n.new.spp <- speciation.limit
+  }
+  
+  # -- Rel Abundances
+  regional.RA <- c(gamma.abund/sum(gamma.abund), rep(0, n.new.spp))
+  total.richness <- length(regional.RA)
+  
+  # -- dispersal traits -- 1 is max dispersal, 0 is min
+  while(length(trait.dispersal)<total.richness){
+    if(!(is.array(trait.dispersal)|is.vector(trait.dispersal))){
+      trait.dispersal <- runif(total.richness, 
+                               trait.dispersal.median - trait.dispersal.range, 
+                               trait.dispersal.median + trait.dispersal.range)
+      trait.dispersal[trait.dispersal > 1] <- 1
+      trait.dispersal[trait.dispersal < 0] <- 0
+    } else {
+      trait.dispersal<-c(trait.dispersal,
+                         runif(total.richness-length(trait.dispersal), 
+                               trait.dispersal.median - trait.dispersal.range, 
+                               trait.dispersal.median + trait.dispersal.range))
+      trait.dispersal[trait.dispersal > 1] <- 1
+      trait.dispersal[trait.dispersal < 0] <- 0
+    }
+  }
+  
+  # -- assign habitat preference traits
+  while(length(trait.Ef)<total.richness){
+    if(!(is.array(trait.Ef)|is.vector(trait.Ef))){
+      trait.Ef <- runif(total.richness, Ef.min, Ef.max)
+    } else {
+      trait.Ef<-c(trait.Ef,
+                  runif(total.richness-length(trait.Ef), 
+                        Ef.min, Ef.max))
+    }
+  }
+  
+  # -- assign niche breadths
+  while(length(trait.Ef.sd)<total.richness){
+    if(!(is.array(trait.Ef.sd)|is.vector(trait.Ef.sd))){ #what to do if trait.Ef.sd array is length 0, make NCM
+      
+      # -- default is neutral community model
+      trait.range <- max(trait.Ef)-min(trait.Ef)
+      trait.Ef.sd <- rep(3*trait.range, total.richness)
+      
+    } else {
+      trait.Ef.sd<-c(trait.Ef.sd,
+                     sample(x = c(trait.Ef.sd, trait.Ef.sd),
+                            size = total.richness-length(trait.Ef.sd), 
+                            replace = TRUE))
+    }
+  }
+  
+  # -- taxa.list
+  while(length(taxa.list)<total.richness){
+    if(!(is.array(taxa.list)|is.vector(taxa.list))){
+      taxa.list <- paste(taxa.list.prefix, c(1:total.richness), 
+                         sep = "")
+    } else {
+      taxa.list <- c(taxa.list,
+                     paste(taxa.list.prefix, 
+                           c((length(taxa.list)+1):total.richness), 
+                           sep = ""))
+    }
+  }
+    
+  if(length(taxa.list)>total.richness){taxa.list<-taxa.list[1:total.richness]}
+  
+  # -- return dataframe
+  return(data.frame(row.names = taxa.list, 
+                    taxa.list = taxa.list, 
+                    trait.dispersal = trait.dispersal[1:length(taxa.list)], 
+                    trait.Ef = trait.Ef[1:length(taxa.list)], 
+                    trait.Ef.sd = trait.Ef.sd[1:length(taxa.list)],
+                    regional.RA = c(regional.RA), 
+                    stringsAsFactors = FALSE))
 }
