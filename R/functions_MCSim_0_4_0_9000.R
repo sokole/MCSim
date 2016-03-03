@@ -247,25 +247,25 @@ fn.metaSIM <- function (
           data.frame(
             param.name=names(siteinfo.metadata),
             param.stat='mean',
-            param.stat.val=t(dplyr::summarise_each(siteinfo.metadata, funs(mean))),
+            param.stat.val=t(dplyr::summarise_each(siteinfo.metadata, dplyr::funs(mean))),
             row.names=NULL
           ),
           data.frame(
             param.name=names(siteinfo.metadata),
             param.stat='sd',
-            param.stat.val=t(dplyr::summarise_each(siteinfo.metadata, funs(sd))),
+            param.stat.val=t(dplyr::summarise_each(siteinfo.metadata, dplyr::funs(sd))),
             row.names=NULL
           ),
           data.frame(
             param.name=names(gamma.metadata),
             param.stat='mean',
-            param.stat.val=t(dplyr::summarise_each(gamma.metadata, funs(mean))),
+            param.stat.val=t(dplyr::summarise_each(gamma.metadata, dplyr::funs(mean))),
             row.names=NULL
           ),
           data.frame(
             param.name=names(gamma.metadata),
             param.stat='sd',
-            param.stat.val=t(dplyr::summarise_each(gamma.metadata, funs(sd))),
+            param.stat.val=t(dplyr::summarise_each(gamma.metadata, dplyr::funs(sd))),
             row.names=NULL
           ))
       )
