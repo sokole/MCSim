@@ -207,7 +207,11 @@ fn.metaSIM <- function (
                                  trunc(runif(1, 1e+05, 999999)), 
                                  sep = "")
       }else{
-        sim.result.name <- sim.ID
+        sim.result.name <- paste(
+          sim.ID,
+          as.character(format(Sys.time(), 
+                              "%Y%m%d_%H%M%S")),
+          sep='_')
       }
       
       # ---------------------------------
