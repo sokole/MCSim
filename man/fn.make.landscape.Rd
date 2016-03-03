@@ -9,6 +9,27 @@ fn.make.landscape(site.coords = data.frame(), dist.mat = data.frame(),
   Ef.specificity = 0, Ef = 0.5, guess.site.coords = FALSE,
   list.of.stuff = NA)
 }
+\arguments{
+\item{site.coords}{A data.frame of site coordinates. Can be 1, 2, or more dimensions}
+
+\item{dist.mat}{Alternative to site.coords. Can be a distance matrix or a network map from the igraph package}
+
+\item{site.info}{A data frame with site information}
+
+\item{JM}{Total number of individuals to include in a MCSim simulation}
+
+\item{I.rate.m2}{Immigration rate in number of individuals / m2 / timestep. Default is 1.}
+
+\item{area.m2}{Area of each site in m2. Default is 1.}
+
+\item{Ef.specificity}{Vector of specificity values for environmental filters at each site. If 0 (default), site habitat value is modeled as a single point along an environmental gradient. If > 0, a site's habitat is modeled as a normal curve around a point on an environmental gradient.}
+
+\item{Ef}{Vector of habitat scores for each site.}
+
+\item{guess.site.coords}{Binary. If TRUE, Uses PCoA to extract site coordinates if given a distance matrix or network map. Useful to make a map to display sites. Not necessary if igraph input is used because igraph has a function to plot a network map. Default is FALSE.}
+
+\item{list.of.stuff}{A list that can be used to store other landscape attributes in the landscape object. Useful for storing igraph properties when igraph is used.}
+}
 \description{
 fn.make.landscape
 }

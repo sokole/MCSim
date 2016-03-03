@@ -59,9 +59,6 @@ fn.metaSIM <- function (
     print("This simulation needs a landscape!")
   } else {
     try({
-      require(reshape2)
-      require(dplyr)
-      
       JM <- sum(landscape$site.info$JL)
       n.sites <- length(landscape$site.info$JL)
       
@@ -159,7 +156,7 @@ fn.metaSIM <- function (
       suppressMessages({
         J.long<-data.frame(
           timestep=1,
-          melt(as.matrix(J.t0),
+          reshape2::melt(as.matrix(J.t0),
                value.name = 'count'))
       })
       names(J.long)<-c('timestep','site','spp','count')
@@ -185,7 +182,7 @@ fn.metaSIM <- function (
         suppressMessages({
           J.long.temp<-data.frame(
             timestep=t.index,
-            melt(as.matrix(J.t),
+            reshape2::melt(as.matrix(J.t),
                  value.name = 'count')
           )
         })
@@ -310,6 +307,17 @@ fn.metaSIM <- function (
 #' fn.make.landscape
 #' 
 #' @title make a simulation landscape
+#' 
+#' @param site.coords A data.frame of site coordinates. Can be 1, 2, or more dimensions
+#' @param dist.mat Alternative to site.coords. Can be a distance matrix or a network map from the igraph package
+#' @param site.info A data frame with site information
+#' @param JM Total number of individuals to include in a MCSim simulation
+#' @param I.rate.m2 Immigration rate in number of individuals / m2 / timestep. Default is 1.
+#' @param area.m2 Area of each site in m2. Default is 1.
+#' @param Ef.specificity Vector of specificity values for environmental filters at each site. If 0 (default), site habitat value is modeled as a single point along an environmental gradient. If > 0, a site's habitat is modeled as a normal curve around a point on an environmental gradient.
+#' @param Ef Vector of habitat scores for each site.
+#' @param guess.site.coords Binary. If TRUE, Uses PCoA to extract site coordinates if given a distance matrix or network map. Useful to make a map to display sites. Not necessary if igraph input is used because igraph has a function to plot a network map. Default is FALSE.
+#' @param list.of.stuff A list that can be used to store other landscape attributes in the landscape object. Useful for storing igraph properties when igraph is used. 
 #' 
 #' @export
 #' 

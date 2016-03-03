@@ -4,8 +4,8 @@ Version: 0.4.0.9000
 Authors@R: 'Eric Sokol <sokole@gmail.com> [aut, cre]'
 Description: This package contains functions for lottery sampling type
     metacommunity simulations.
-Depends:
-    plyr
 License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1
+Imports: dplyr,
+    reshape2
