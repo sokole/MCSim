@@ -11,4 +11,4 @@ Please feel free to email me with questions, suggestions, etc.
 
 Eric R. Sokol
 
-sokole at vt dot edu
+sokole at gmail dot com
