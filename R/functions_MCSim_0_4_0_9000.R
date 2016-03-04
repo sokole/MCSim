@@ -315,8 +315,10 @@ fn.metaSIM <- function (
 #' @param site.coords A data.frame of site coordinates. Can be 1, 2, or more dimensions
 #' @param dist.mat Alternative to site.coords. Can be a distance matrix or a network map from the igraph package
 #' @param site.info A data frame with site information
-#' @param JM Total number of individuals to include in a MCSim simulation
-#' @param I.rate.m2 Immigration rate in number of individuals / m2 / timestep. Default is 1.
+#' @param JL Scalar or vector number of individuals at each site, overrides JM
+#' @param JM Total number of individuals to include in a MCSim simulation.
+#' @param m Immigration rate paramter, from Hubbells neutral model. Overrides I.rate.m2.
+#' @param I.rate.m2 Alternative to m, immigration rate in number of individuals / m2 / timestep. Default is 1.
 #' @param area.m2 Area of each site in m2. Default is 1.
 #' @param Ef.specificity Vector of specificity values for environmental filters at each site. If 0 (default), site habitat value is modeled as a single point along an environmental gradient. If > 0, a site's habitat is modeled as a normal curve around a point on an environmental gradient.
 #' @param Ef Vector of habitat scores for each site.
@@ -331,18 +333,20 @@ fn.make.landscape<-function(
   # -------------------------------
   # -- data frame inputs
   # -- need one or the other, or they have to match. Priority given to dist if they don't
-  site.coords = data.frame(),
+  site.coords = c(1:10),
   dist.mat = data.frame(),
   
   # -- will fill in info if none given
   site.info = data.frame(),
   
   # -- default metacommunity parameters if none given
-  JM = 1000,
-  I.rate.m2 = 1,
+  JL = NULL,
+  JM = NULL,
+  m = NULL,
+  I.rate.m2 = NULL,
   area.m2 = 1,
   Ef.specificity = 0, # 0 is point specificity along env. gradient
-  Ef = .5,
+  Ef = 0,
   guess.site.coords = FALSE,
   list.of.stuff = NA
 ){
@@ -395,18 +399,36 @@ fn.make.landscape<-function(
     
     # -------------------------------
     # -- calculate assemblage sizes at sites, JL 
-    # -- JL influenced by management
     # -------------------------------
-    JL.wts <- area.m2 / sum(area.m2)
-    JL.wts <- JL.wts/sum(JL.wts)
-    JL <- round(JL.wts * JM,0)
+    if( is.null(JL) | !(length(JL)%in%c(1, n.obs)) ){
+      JL.wts <- area.m2 / sum(area.m2)
+      JL.wts <- JL.wts/sum(JL.wts)
+      JL <- round(JL.wts * JM,0)
+    }else{
+      JL <- data.frame(
+        dummy=c(1:n.obs),
+        JL=JL)$JL
+      JM <- sum(JL)
+    }
     
     # -------------------------------
     # -- calculate immigration at sites, IL 
     # -------------------------------
-    I.site <- I.rate.m2 * area.m2
-    I.site <- round(I.site,0)
-    m.site <- I.site/(I.site + JL - 1)
+    
+    if(!is.null(m) & length(m)%in%c(1,n.obs)){
+      m.site <- data.frame(
+        dummy=c(1:n.obs),
+        m=m)$m
+      I.site <- m.site * (JL - 1) / (1 - m.site)
+      I.site <- ifelse(is.infinite(I.site), 10*JL, I.site)
+    }else if(!is.null(I.rate.m2)){
+      I.site <- I.rate.m2 * area.m2
+      I.site <- round(I.site,0)
+      m.site <- I.site/(I.site + JL - 1)
+    }else{
+      print('aaaaggghhh, need immigration rate')
+    }
+    
     
     # -------------------------------
     # -- dat with info
@@ -441,6 +463,7 @@ fn.make.landscape<-function(
     print('no landscape for you!')
   }
 }
+
 
 # ---------------------------------------------------------------------------------------
 #' fn.recruit.Jt

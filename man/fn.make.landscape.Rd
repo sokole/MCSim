@@ -4,10 +4,10 @@
 \alias{fn.make.landscape}
 \title{make a simulation landscape}
 \usage{
-fn.make.landscape(site.coords = data.frame(), dist.mat = data.frame(),
-  site.info = data.frame(), JM = 1000, I.rate.m2 = 1, area.m2 = 1,
-  Ef.specificity = 0, Ef = 0.5, guess.site.coords = FALSE,
-  list.of.stuff = NA)
+fn.make.landscape(site.coords = c(1:10), dist.mat = data.frame(),
+  site.info = data.frame(), JL = NULL, JM = NULL, m = NULL,
+  I.rate.m2 = NULL, area.m2 = 1, Ef.specificity = 0, Ef = 0,
+  guess.site.coords = FALSE, list.of.stuff = NA)
 }
 \arguments{
 \item{site.coords}{A data.frame of site coordinates. Can be 1, 2, or more dimensions}
@@ -16,9 +16,13 @@ fn.make.landscape(site.coords = data.frame(), dist.mat = data.frame(),
 
 \item{site.info}{A data frame with site information}
 
-\item{JM}{Total number of individuals to include in a MCSim simulation}
+\item{JL}{Scalar or vector number of individuals at each site, overrides JM}
 
-\item{I.rate.m2}{Immigration rate in number of individuals / m2 / timestep. Default is 1.}
+\item{JM}{Total number of individuals to include in a MCSim simulation.}
+
+\item{m}{Immigration rate paramter, from Hubbells neutral model. Overrides I.rate.m2.}
+
+\item{I.rate.m2}{Alternative to m, immigration rate in number of individuals / m2 / timestep. Default is 1.}
 
 \item{area.m2}{Area of each site in m2. Default is 1.}
 
