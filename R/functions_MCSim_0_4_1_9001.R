@@ -208,6 +208,7 @@ fn.metaSIM <- function (
                                  sep = "")
       }else{
         sim.result.name <- paste(
+          "SIM", 
           sim.ID,
           as.character(format(Sys.time(), 
                               "%Y%m%d_%H%M%S")),
