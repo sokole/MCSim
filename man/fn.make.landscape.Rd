@@ -7,7 +7,7 @@
 fn.make.landscape(site.coords = c(1:10), dist.mat = data.frame(),
   site.info = data.frame(), JL = NULL, JM = NULL, m = NULL,
   I.rate.m2 = NULL, area.m2 = 1, Ef.specificity = 0, Ef = 0,
-  guess.site.coords = FALSE, list.of.stuff = NA)
+  guess.site.coords = FALSE, list.of.stuff = NA, ...)
 }
 \arguments{
 \item{site.coords}{A data.frame of site coordinates. Can be 1, 2, or more dimensions}

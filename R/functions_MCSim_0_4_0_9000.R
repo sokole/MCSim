@@ -348,7 +348,8 @@ fn.make.landscape<-function(
   Ef.specificity = 0, # 0 is point specificity along env. gradient
   Ef = 0,
   guess.site.coords = FALSE,
-  list.of.stuff = NA
+  list.of.stuff = NA,
+  ...
 ){
   # -------------------------------
   # -------------------------------
@@ -711,7 +712,7 @@ fn.set.regional.species.pool <- function ( alpha.fisher = 1,
     if(!(is.array(trait.Ef)|is.vector(trait.Ef))){
       trait.Ef <- runif(total.richness, Ef.min, Ef.max)
     } else {
-      trait.Ef<-c(trait.Ef,
+      trait.Ef <- c(trait.Ef,
                   runif(total.richness-length(trait.Ef), 
                         Ef.min, Ef.max))
     }
@@ -723,7 +724,8 @@ fn.set.regional.species.pool <- function ( alpha.fisher = 1,
       
       # -- default is neutral community model
       trait.range <- max(trait.Ef)-min(trait.Ef)
-      trait.Ef.sd <- rep(3*trait.range, total.richness)
+      if(!trait.range>0) trait.range <- 1 #make non-zero trait range
+      trait.Ef.sd <- rep(1000*trait.range, total.richness) #make neutral community
       
     } else {
       trait.Ef.sd<-c(trait.Ef.sd,
