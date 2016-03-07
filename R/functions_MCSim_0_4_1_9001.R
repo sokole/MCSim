@@ -275,8 +275,9 @@ fn.metaSIM <- function (
       )
       
       # -- check for output directory, create if necessary
-      if (!output.dir.path %in% list.files()) 
+      if (!file.exists(output.dir.path)){
         dir.create(output.dir.path)
+      } 
       
       # -- save sim if requested
       if (save.sim) 
