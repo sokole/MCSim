@@ -9,7 +9,7 @@ MCSim is a package for R that can be used to design lottery-based simulations of
 * Find an intro tutorial to MCSim at [http://rpubs.com/sokole/159425](http://rpubs.com/sokole/159425)  
 * [Application of metacommunity simulations at the McMurdo Dry Valleys LTER](http://mcm.lternet.edu/content/metacommunity-dynamics-simulations-diatoms-antarctic-ponds)
 * [The LTER Metacommunities Working Group project page](https://sites.google.com/site/ltermetacommunities/home)
-* [LTER Metacommunities on github](https://github.com/sokole/ltermetacommunities/))
+* [LTER Metacommunities on github](https://github.com/sokole/ltermetacommunities/)
 
 Please feel free to email me with questions, suggestions, etc.  
 ####Eric R. Sokol  
