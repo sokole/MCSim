@@ -550,8 +550,8 @@ fn.recruit.Jt <- function(
   max.val<-max(mat.geodist[mat.geodist!=Inf]) #max finite value
   mat.geodist.scaled<-mat.geodist/max.val
   SWM<-exp(-1*SWM.slope*mat.geodist.scaled^2)
-  SWM<-SWM/rowSums(SWM)
   diag(SWM)<-0
+  SWM<-SWM/rowSums(SWM)
   
   
   # -- calculate I for each site based on composition of neighboring sites
