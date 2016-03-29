@@ -580,16 +580,22 @@ fn.recruit.Jt <- function(
   R.t.probs<-mat.nu
   
   # -- Local environmental filtering
-  d.temp<-expand.grid(Ef=Ef,stringsAsFactors=FALSE,
-                      trait.Ef=traits.Ef)
-  d.temp$Ef.specificity<-Ef.specificity
+  d.temp <- expand.grid(
+    Ef = Ef,
+    trait.Ef = traits.Ef,
+    stringsAsFactors=FALSE)
   
-  lambda.Ef.siteBYspp<-matrix(
-    data=mapply(FUN=fn.lambda,
-                trait.optimum=d.temp$trait.Ef,
-                Ef=d.temp$Ef,
-                Ef.specificity=d.temp$Ef.specificity,
-                MoreArgs=list(niche.breadth=trait.Ef.sd)
+  d.temp$Ef.specificity <- Ef.specificity
+  
+  d.temp$trait.Ef.sd <- rep(trait.Ef.sd, 
+                            each = length(Ef))
+  
+  lambda.Ef.siteBYspp <- matrix(
+    data=mapply(FUN = fn.lambda,
+                trait.optimum = d.temp$trait.Ef,
+                Ef = d.temp$Ef,
+                Ef.specificity = d.temp$Ef.specificity,
+                MoreArgs = list(niche.breadth = trait.Ef.sd)
     ),
     nrow=length(Ef), #number sites
     ncol=length(traits.Ef), #number spp
