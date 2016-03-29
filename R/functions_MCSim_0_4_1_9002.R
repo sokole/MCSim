@@ -595,11 +595,11 @@ fn.recruit.Jt <- function(
                 trait.optimum = d.temp$trait.Ef,
                 Ef = d.temp$Ef,
                 Ef.specificity = d.temp$Ef.specificity,
-                MoreArgs = list(niche.breadth = trait.Ef.sd)
+                niche.breadth = d.temp$trait.Ef.sd
     ),
-    nrow=length(Ef), #number sites
-    ncol=length(traits.Ef), #number spp
-    byrow=FALSE
+    nrow = length(Ef), #number sites
+    ncol = length(traits.Ef), #number spp
+    byrow = FALSE
   )
   lambda.Ef.siteBYspp<-lambda.Ef.siteBYspp/rowSums(lambda.Ef.siteBYspp) #rescale so row sums are 1
   
