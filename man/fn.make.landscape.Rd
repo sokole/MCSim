@@ -5,6 +5,7 @@
 \title{Make a simulation landscape}
 \usage{
 fn.make.landscape(JM = 10000, m = 0.1)
+ fn.make.landscape(site.coords = c(1:10), m = 0.1, JM = 10000)
 }
 \arguments{
 \item{site.coords}{A data.frame of site coordinates. Can be 1, 2, or more dimensions}
