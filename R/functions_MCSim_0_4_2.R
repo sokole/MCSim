@@ -6,7 +6,7 @@
 #' @title A metacommunity simulation for ecologists
 #' 
 #' @usage 
-#' fn.metaSIM(landscape)
+#' fn.metaSIM(landscape, ...)
 #' 
 #' @param landscape Landscape object created by function fn.make.landscape()
 #' @param scenario.ID A name for the simulation scenario. All simulations with the same scenario name will have metadata collated in a single .csv file. Default is NA
@@ -318,7 +318,12 @@ fn.metaSIM <- function (
 # ---------------------------------------------------------------------------------------
 #' fn.make.landscape
 #' 
-#' @title make a simulation landscape
+#' @title Make a simulation landscape
+#' 
+#' @description Define the attributes of a MCSim landscape, including number of sites, area, carrying capacity, and local immigration rates.
+#' 
+#' @usage fn.make.landscape(JM = 10000, m = 0.1)
+#' @usage fn.make.landscape(site.coords = c(1:10), m = 0.1, JM = 10000) 
 #' 
 #' @param site.coords A data.frame of site coordinates. Can be 1, 2, or more dimensions
 #' @param dist.mat Alternative to site.coords. Can be a distance matrix or a network map from the igraph package
