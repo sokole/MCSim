@@ -2,12 +2,9 @@
 % Please edit documentation in R/functions_MCSim_0_4_2.R
 \name{fn.make.landscape}
 \alias{fn.make.landscape}
-\title{make a simulation landscape}
+\title{Make a simulation landscape}
 \usage{
-fn.make.landscape(site.coords = c(1:10), dist.mat = data.frame(),
-  site.info = data.frame(), JL = NULL, JM = NULL, m = NULL,
-  I.rate.m2 = NULL, area.m2 = 1, Ef.specificity = 0, Ef = 0,
-  guess.site.coords = FALSE, list.of.stuff = NA, ...)
+fn.make.landscape(JM = 10000, m = 0.1)
 }
 \arguments{
 \item{site.coords}{A data.frame of site coordinates. Can be 1, 2, or more dimensions}
@@ -35,9 +32,11 @@ fn.make.landscape(site.coords = c(1:10), dist.mat = data.frame(),
 \item{list.of.stuff}{A list that can be used to store other landscape attributes in the landscape object. Useful for storing igraph properties when igraph is used.}
 }
 \description{
-fn.make.landscape
+Define the attributes of a MCSim landscape, including number of sites, area, carrying capacity, and local immigration rates.
 }
 \details{
+fn.make.landscape
+
 There are two steps to creating a metacommunity simulation in MCSim:
 1. Make a "landscape" -- The landscape is the “game board” on which the simulation plays out, and it is created using the fn.make.landscape function.
 2. Run the simulation -- Once the landscape is created, you can pass the landscape object to fn.metaSIM along with parameter settings that define the rules for how metacommunity dynamics will play out in the metacommunity simulation. Note that the current version of MCSim is zero sum, which means there will always be JM individuals in the simulation during each generation.
