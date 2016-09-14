@@ -1,5 +1,4 @@
 # --------------------------------------------------------------------------------------------
-#' fn.lambda
 #' 
 #' @title Calculate recruitment bias based on environmental filtering
 #' 
@@ -17,6 +16,8 @@
 #' @param Ef Value of the environmental filter at the site for which lambda is being 
 #' calculated.
 #' @param Ef.specificity The selection specificity of the environmental filter.
+#' 
+#' @details Used by \link{fn.metaSIM}.  
 #' 
 #' @references 
 #' Gravel, D., C. D. Canham, M. Beaudet, and C. Messier. 2006. Reconciling niche and 
@@ -40,7 +41,6 @@ fn.lambda <- function(
 }
 
 # --------------------------------------------------------------------------------------------
-#' fn.lottery.recruit
 #' 
 #' @title Lottery recruitment
 #' 
@@ -53,6 +53,8 @@ fn.lambda <- function(
 #' @param vect.taxa.list A vector of characters (or character strings) that is a 
 #' list of species names.
 #' @param scalar.JL Size of the assemblage (i.e., number of individuals to recruit).
+#' 
+#' @details Used by \link{fn.metaSIM}.
 #' 
 #' @export
 #' 

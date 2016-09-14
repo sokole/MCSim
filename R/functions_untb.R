@@ -1,5 +1,4 @@
 # --------------------------------------------------------
-#' count
 #' 
 #' @title count
 #' @aliases as.count
@@ -17,6 +16,8 @@
 #' \url{http://cran.r-project.org/web/packages/untb/index.html}
 #' 
 #' @seealso \code{\link[untb]{count}}
+#' 
+#' @details Used for internal calculations in \link{fn.metaSIM}.
 #'
 as.count <- function (a, add = ""){
   if (is.count(a)) {
@@ -57,7 +58,6 @@ is.count <- function(a){
   inherits(a, "count")
 }
 # --------------------------------------------------------
-#' fisher.ecosystem
 #' 
 #' @title fisher.ecosystem
 #' @aliases fisher.ecosystem
@@ -78,6 +78,8 @@ is.count <- function(a){
 #' \url{http://cran.r-project.org/web/packages/untb/index.html}
 #' 
 #' @seealso \code{\link[untb]{fisher.ecosystem}}
+#' 
+#' @details Used for internal calculations in \link{fn.metaSIM}.
 #' 
 fisher.ecosystem <- function(N, S, nmax, alpha = 2, c = 0){
   x <- N/(N + alpha)

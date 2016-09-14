@@ -1,12 +1,14 @@
 # ---------------------------------------------------------------------------------------
 # -- v0.4.2.0000 functions
 # ---------------------------------------------------------------------------------------
-#' fn.metaSIM
 #' 
 #' @title A metacommunity simulation for ecologists
 #' 
 #' @usage 
 #' fn.metaSIM(landscape, ...)
+#' 
+#' @description fn.metaSIM() initiates a metacommunity simulation based on a landscape
+#' created by the fn.make.landscape() function.
 #' 
 #' @param landscape Landscape object created by function fn.make.landscape()
 #' @param scenario.ID A name for the simulation scenario. All simulations with the same scenario name will have metadata collated in a single .csv file. Default is NA
@@ -34,6 +36,9 @@
 #' 1. Make a "landscape" -- The landscape is the “game board” on which the simulation plays out, and it is created using the fn.make.landscape function.
 #' 2. Run the simulation -- Once the landscape is created, you can pass the landscape object to fn.metaSIM along with parameter settings that define the rules for how metacommunity dynamics will play out in the metacommunity simulation. Note that the current version of MCSim is zero sum, which means there will always be JM individuals in the simulation during each generation.
 #' For a tutorial, see \url{http://rpubs.com/sokole/159425}
+#' 
+#' Note that a user can choose to save simulation output to a directory set by output.dir.path
+#' by setting save.sim = TRUE
 #' 
 fn.metaSIM <- function (
   # -- unchanged vars
@@ -485,7 +490,6 @@ fn.make.landscape<-function(
 
 
 # ---------------------------------------------------------------------------------------
-#' fn.recruit.Jt
 #' 
 #' @title Recruitment in a metacommunity with context
 #' 
@@ -496,13 +500,18 @@ fn.make.landscape<-function(
 #'filtering.
 #' 
 #' @usage 
-#' fn.recruit.Jt(landscape.site.coords = landscape$dat[, c("x", "y")], nu = nu,
-#'               SWM.slope = SWM.slope, J.t.minus.1 = J.t.minus.1, 
-#'               taxa.list = taxa.list, traits.Ef = dat.gamma.t0$trait.Ef, 
-#'               trait.Ef.sd = trait.Ef.sd, traits.dispersal = dat.gamma.t0$trait.dispersal, 
-#'               landscape.m = landscape$dat$m, landscape.Ef = landscape$dat$Ef, 
-#'               landscape.Ef.specificity = landscape$dat$Ef.specificity, 
-#'               landscape.JL = landscape$dat$JL)
+#' fn.recruit.Jt(landscape.site.coords, 
+#'                nu,
+#'                SWM.slope, 
+#'                J.t.minus.1, 
+#'                taxa.list, 
+#'                traits.Ef, 
+#'                trait.Ef.sd, 
+#'                traits.dispersal, 
+#'                landscape.m, 
+#'                landscape.Ef, 
+#'                landscape.Ef.specificity, 
+#'                landscape.JL)
 #'               
 #' @param landscape.site.coords A data.frame with xy-coordinates for each site.  Each row is a 
 #' site in the metacommunity landscape.
@@ -527,6 +536,8 @@ fn.make.landscape<-function(
 #' in the landscape.
 #' 
 #' @seealso \link{fn.lottery.recruit}, \link{fn.make.landscape}, \link{fn.metaSIM}
+#' 
+#' @details Internal function called by \link{fn.metaSIM}.
 #' 
 #' @export
 #' 
@@ -639,7 +650,6 @@ fn.recruit.Jt <- function(
 }
 
 # --------------------------------------------------------------------------------------------
-#' fn.set.regional.species.pool
 #' 
 #' @title Initialize species pool for fn.metaSIM
 #' 
@@ -667,6 +677,8 @@ fn.recruit.Jt <- function(
 #' @param trait.Ef.sd Vector or value of niche breadths
 #' @param taxa.list.prefix A character string to use as a prefix in species' names.
 #' @param taxa.list.prefix Text appended as prefix to species names to prevent errors for column names when site by species matrices are created. Default is "spp".
+#' 
+#' @details Internal function called by \link{fn.metaSIM}.
 #' 
 #' @export
 #' 

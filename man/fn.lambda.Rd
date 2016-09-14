@@ -25,7 +25,7 @@ environmental gradient to determine how to bias species selection
 weights based on environmental filtering dynamics.  See Gravel et al. 2006.
 }
 \details{
-fn.lambda
+Used by \link{fn.metaSIM}.
 }
 \references{
 Gravel, D., C. D. Canham, M. Beaudet, and C. Messier. 2006. Reconciling niche and 

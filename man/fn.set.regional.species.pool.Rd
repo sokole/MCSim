@@ -45,6 +45,6 @@ dispersal values.}
 Initialize species pool for fn.metaSIM
 }
 \details{
-fn.set.regional.species.pool
+Internal function called by \link{fn.metaSIM}.
 }
 

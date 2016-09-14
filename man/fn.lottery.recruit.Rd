@@ -19,6 +19,6 @@ Lottery recruitment function for a single assemblage used
 by \link{fn.metaSIM}.
 }
 \details{
-fn.lottery.recruit
+Used by \link{fn.metaSIM}.
 }
 

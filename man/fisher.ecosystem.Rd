@@ -23,7 +23,7 @@ see \link[untb]{fisher.ecosystem}  -- used for internal
 calculations in \link{fn.metaSIM}.
 }
 \details{
-fisher.ecosystem
+Used for internal calculations in \link{fn.metaSIM}.
 }
 \references{
 Hankin, R. K. 2007. Introducing untb, an R package for simulating 

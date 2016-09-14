@@ -4,13 +4,18 @@
 \alias{fn.recruit.Jt}
 \title{Recruitment in a metacommunity with context}
 \usage{
-fn.recruit.Jt(landscape.site.coords = landscape$dat[, c("x", "y")], nu = nu,
-              SWM.slope = SWM.slope, J.t.minus.1 = J.t.minus.1, 
-              taxa.list = taxa.list, traits.Ef = dat.gamma.t0$trait.Ef, 
-              trait.Ef.sd = trait.Ef.sd, traits.dispersal = dat.gamma.t0$trait.dispersal, 
-              landscape.m = landscape$dat$m, landscape.Ef = landscape$dat$Ef, 
-              landscape.Ef.specificity = landscape$dat$Ef.specificity, 
-              landscape.JL = landscape$dat$JL)
+fn.recruit.Jt(landscape.site.coords, 
+               nu,
+               SWM.slope, 
+               J.t.minus.1, 
+               taxa.list, 
+               traits.Ef, 
+               trait.Ef.sd, 
+               traits.dispersal, 
+               landscape.m, 
+               landscape.Ef, 
+               landscape.Ef.specificity, 
+               landscape.JL)
 }
 \arguments{
 \item{nu}{Numeric, Hubbell's "speciation rate", but can be interpreted as the 
@@ -54,7 +59,7 @@ composition at time (t-1), dispersal dynamics, landscape topology, and environme
 filtering.
 }
 \details{
-fn.recruit.Jt
+Internal function called by \link{fn.metaSIM}.
 }
 \seealso{
 \link{fn.lottery.recruit}, \link{fn.make.landscape}, \link{fn.metaSIM}
