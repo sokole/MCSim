@@ -316,7 +316,6 @@ fn.metaSIM <- function (
   }
 }
 # ---------------------------------------------------------------------------------------
-#' fn.make.landscape
 #' 
 #' @title Make a simulation landscape
 #' 
