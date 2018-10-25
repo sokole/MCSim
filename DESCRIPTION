@@ -7,5 +7,5 @@ Description: This package contains functions for lottery sampling type
 License: GPL-3
 LazyData: true
 RoxygenNote: 6.1.0
-Imports: dplyr,
+Imports: tidyverse,
     reshape2
