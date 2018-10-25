@@ -34,4 +34,3 @@ Statistical Software 22:1--15.
 \seealso{
 \code{\link[untb]{fisher.ecosystem}}
 }
-

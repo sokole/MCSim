@@ -8,4 +8,3 @@
 \description{
 The MCSim package provides functions necessary for running iterative, lottery-based metacommunity simulations
 }
-
