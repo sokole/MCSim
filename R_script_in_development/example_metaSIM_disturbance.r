@@ -1,3 +1,7 @@
+# setwd("C:/Users/esokol/Documents/Git/MCSim/R_script_in_development")
+
+library(tidyverse)
+
 source('fn.metaSIM.disturbance.R')
 
 # full time series name, string together pre and post disturbance together using this character string
@@ -13,16 +17,16 @@ xy_coordinates <- data.frame(
 
 my_landscape_list <- 
   list(
-    landscape_1 = MCSim::fn.make.landscape(
+    landscape_1 = MCSim::fn.make.landscape( # pre-disturbance landscape
       site.coords = xy_coordinates,
       m = c(0.5, 0.5, 0.1, 0.1, 0.01),
       Ef = c(-1, -.25, .1, 1, 2),
       JL = c(100, 100, 100, 100, 100)),
-    landscape_2 = post_disturbance_landscape <- MCSim::fn.make.landscape(
+    landscape_2 = MCSim::fn.make.landscape( # disturbed landscape with reduced carrying capacity
       site.coords = xy_coordinates,
       m = c(0.5, 0.5, 0.1, 0.1, 0.01),
       Ef = c(-1, -.25, .1, 1, 2),
-      JL = c(50, 50, 100, 100, 100)), # disturbance is decreased carrying capacity at 2 sites
+      JL = c(50, 50, 100, 100, 100)), # <-- decreased carrying capacity at 2 sites
     landscape_3 = MCSim::fn.make.landscape(
       site.coords = xy_coordinates,
       m = c(0.5, 0.5, 0.1, 0.1, 0.01),
