@@ -9,8 +9,10 @@ my_scenario_name <- 'mySim'
 
 # generating pre and post disturbance landscapes
 xy_coordinates <- data.frame(
-  x = c(1, 2, 3, 4, 5),
-  y = c(1, 3, 1, 5, 2))
+  x = c(1, 1.5, 3, 4, 5),
+  y = c(1, 1.5, 1, 6, 2))
+
+plot(xy_coordinates)
 
 #############
 # send function landscape list and interval duration list, along with other metaSim parameters that will be fixed across all simulations
@@ -37,9 +39,10 @@ my_time_interval_durations <- c(10, 3, 10 )
 
 # -- fixed across simulations
 # niche positions, niche breadths, and relative abundances for three species
-my_niche_positions <-  c(-.5, 0, .5)
-my_niche_breadths <- c(.2, .2, 5)
+my_niche_positions <-  c(-.25, 0, .25)
+my_niche_breadths <- c(.2, 1, 1)
 my_regional_rel_abund <- c(.8, .1, .1)
+trait.dispersal <- c(1, 50, 100)
 
 # -- call the wrapper function
 my_sim_result <- fn.metaSIM.disturbance(
@@ -55,3 +58,9 @@ my_sim_result <- fn.metaSIM.disturbance(
   nu = 0.001,
   save.sim = FALSE
 )
+
+my_sim_result$J.long %>% ggplot(aes(timestep, count, color = spp)) +
+  geom_line() +
+  facet_wrap(~ as.factor(site))
+
+data_wide <- my_sim_result$J.long %>% group_by(timestep, site) %>% spread(spp, count)
