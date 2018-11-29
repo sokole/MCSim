@@ -8,11 +8,11 @@ fn.make.landscape(JM = 10000, m = 0.1)
 fn.make.landscape(site.coords = c(1:10), m = 0.1, JM = 10000)
 }
 \arguments{
+\item{site.info}{A data frame with site information}
+
 \item{site.coords}{A data.frame of site coordinates. Can be 1, 2, or more dimensions}
 
 \item{dist.mat}{Alternative to site.coords. Can be a distance matrix or a network map from the igraph package}
-
-\item{site.info}{A data frame with site information}
 
 \item{JL}{Scalar or vector number of individuals at each site, overrides JM}
 

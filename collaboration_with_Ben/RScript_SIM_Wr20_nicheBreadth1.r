@@ -2,7 +2,7 @@
 #' @author Eric Sokol (sokole@gmail.com)
 #' @description  Distinct scenarios -- 
 #'   1. species sorting with no dispersal (everything everywhere but environment selects)
-#'   2. species sorting with strong dispersal limitation
+#'   --> 2. species sorting with strong dispersal limitation
 #'   3. neutral no dispersal limitation
 #'   4. neutral with dispersal limitation
 
@@ -21,7 +21,7 @@ library(tidyverse)
 
 
 # user provided vars
-my_W.r <- 0 #dispersal kernel slope, 0 = no limitation
+my_W.r <- 20 #dispersal kernel slope, 0 = no limitation
 
 my_niche_breadth_multiplier <- 1 #increases neutrality by increasing niche bredth, numbers > 2 should be approx neutral
 
@@ -35,8 +35,8 @@ set.seed(123)
 # default is no invasion
 # my_nu <- 0.001 #metacommunity invasion probability
 # my_speciation.limit <- 5 #set limit to number of potential invaders
-my_speciation.limit <- 0 #closed system with no invaders
 my_nu <- 0
+my_speciation.limit <- 0 #closed system with no invaders
 
 # number of time steps
 my_n.timestep <- 200

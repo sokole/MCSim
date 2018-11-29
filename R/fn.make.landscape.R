@@ -31,14 +31,16 @@ fn.make.landscape<-function(
   # -------------------------------
   # -------------------------------
   # -- data frame inputs
+  site.info = data.frame(),
+  
   # -- need one or the other, or they have to match. Priority given to dist if they don't
-  site.coords = c(1:10),
+  site.coords = NULL,
   dist.mat = data.frame(),
   
   # -- will fill in info if none given
-  site.info = data.frame(),
   
   # -- default metacommunity parameters if none given
+  site.ID = NULL,
   JL = NULL,
   JM = NULL,
   m = NULL,
@@ -55,7 +57,25 @@ fn.make.landscape<-function(
   # -------------------------------
   
   # -- ESCAPE VAR
-  get.the.f.out<-FALSE
+  get.the.f.out <- FALSE
+  
+  # -- extracting variables from the site.info data frame if they are provided in there by the user
+  vector_argument_list = c('site.ID','JL','JM','m','I.rate.m2','area.m2','Ef.specificity','Ef')
+  
+  # extract site.coords from site.info if available
+  if(is.null(site.coords) & nrow(dist.mat) == 0){
+    try({site.coords <- site.info[ , !names(site.info) %in% vector_argument_list]})
+  }
+  
+  if(is.null(JL) & 'JL' %in% names(site.info)) JL <- site.info$JL
+  if(is.null(JM) & 'JM' %in% names(site.info)) JM <- site.info$JM
+  if(is.null(m) & 'm' %in% names(site.info)) m <- site.info$m
+  if(is.null(I.rate.m2) & 'I.rate.m2' %in% names(site.info)) I.rate.m2 <- site.info$I.rate.m2
+  
+  # override defaults if these vars are included in site.info
+  if('area.m2' %in% names(site.info)) area.m2 <- site.info$area.m2
+  if('Ef.specificity' %in% names(site.info)) Ef.specificity <- site.info$Ef.specificity
+  if('Ef' %in% names(site.info)) Ef <- site.info$Ef
   
   try({site.coords<-as.data.frame(site.coords)},
       silent = TRUE)
@@ -133,8 +153,17 @@ fn.make.landscape<-function(
     # -------------------------------
     # -- dat with info
     # -------------------------------
+    if(is.null(site.ID)){
+      if('site.ID' %in% names(site.info)){
+        site.ID <- site.info$site.ID
+      }else{
+        site.ID <- c(1:nrow(dat.geo.out))
+      }
+    }
+
+    
     dat.info.default<-data.frame(
-      site.ID = c(1:nrow(dat.geo.out)),
+      site.ID = site.ID,
       area.m2 = area.m2,
       JL = JL,
       Ef = Ef,
@@ -162,4 +191,5 @@ fn.make.landscape<-function(
   }else{
     print('no landscape for you!')
   }
-}
+  }
+  
