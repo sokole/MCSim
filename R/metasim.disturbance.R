@@ -90,4 +90,7 @@ return(
   ))
 } #END FUNCTION
 
+
+# define alias functions
+#' @export
 fn.metaSIM.disturbance <- metasim.disturbance
