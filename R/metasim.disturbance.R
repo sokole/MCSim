@@ -3,8 +3,10 @@
 
 #' @title A metacommunity simulation for ecologists
 #' 
+#' @aliases fn.metaSIM.disturbance
+#' 
 #' @usage 
-#' fn.metaSIM.disturbance(scenario_name, landscape_list, time_interval_durations)
+#' metasim.disturbance(scenario_name, landscape_list, time_interval_durations)
 #' 
 #' @description Wrapper function for MCSim::fn.metaSIM, sends landscape list and interval duration list, along with other metaSim parameters that will be fixed across all simulations
 #' 
@@ -16,7 +18,7 @@
 #' @export
 #' 
 
-fn.metaSIM.disturbance <- function(
+metasim.disturbance <- function(
   
   scenario_name, # text string
   landscape_list, # list of landscapes to run in series
@@ -87,3 +89,5 @@ return(
       flatten() %>% bind_rows()
   ))
 } #END FUNCTION
+
+fn.metaSIM.disturbance <- metasim.disturbance
