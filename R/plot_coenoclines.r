@@ -1,3 +1,18 @@
+# --------------------------------------------------------------------------------------------
+#' 
+#' @title plot standardized dispersal kernel
+#' 
+#' @description plot standardized dispersal kernel
+#' 
+#' @param sim_result output from a simulation, default is NULL
+#' @param landscape a landscape object, default is NULL
+#' @param Ef numeric vector of environmental filter values for sites in a simulation result, default is NULL
+#' @param trait_Ef numeric vector of niche positions of species in metacommunity, default is NULL
+#' @param trait_Ef_sd numeric vector of niche breadths, default is NULL
+#' 
+#' 
+#' 
+#' @export
 plot_coenoclines <- function(
     sim_result = NULL,
     landscape = NULL,

@@ -1,3 +1,17 @@
+# --------------------------------------------------------------------------------------------
+#' 
+#' @title plot standardized dispersal kernel
+#' 
+#' @description plot standardized dispersal kernel
+#' 
+#' @param Wr dispersal kernel slope, default is NULL
+#' @param sim_result simulation output, default is NULL
+#' @param landscape a landscape object, default is NULL
+#' @param distance_matrix a distance matrix, default is NULL
+#' 
+#' 
+#' 
+#' @export
 plot_standardized_disp_kernel <- function(
   Wr = NULL,
   sim_result = NULL,
