@@ -4,8 +4,7 @@ Version: 0.4.3
 Authors@R: 'Eric Sokol <sokole@gmail.com> [aut, cre]'
 Description: This package contains functions for lottery sampling type
     metacommunity simulations.
+Depends: dplyr, tidyr, magrittr, vegetarian, purrr, reshape2
 License: GPL-3
 LazyData: true
 RoxygenNote: 6.1.1
-Imports: tidyverse,
-    reshape2
