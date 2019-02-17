@@ -1,5 +1,3 @@
-# --------------------------------------------------------------------------------------------
-#' 
 #' @title plot standardized dispersal kernel
 #' 
 #' @description plot standardized dispersal kernel
@@ -18,6 +16,9 @@ plot_standardized_disp_kernel <- function(
   landscape = NULL,
   distance_matrix = NULL,
   ...){
+  
+  requireNamespace("magrittr")
+  
   
   w <- max(c(sim_result$W.r, Wr))
   

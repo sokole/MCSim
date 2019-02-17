@@ -8,3 +8,4 @@ Depends: dplyr, tidyr, magrittr, vegetarian, purrr, reshape2
 License: GPL-3
 LazyData: true
 RoxygenNote: 6.1.1
+

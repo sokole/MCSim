@@ -1,5 +1,3 @@
-# --------------------------------------------------------------------------------------------
-#' 
 #' @title plot standardized dispersal kernel
 #' 
 #' @description plot standardized dispersal kernel
@@ -21,6 +19,8 @@ plot_coenoclines <- function(
     trait_Ef_sd = NULL,
     ...){
     
+  requireNamespace("magrittr")
+  
   # check for necessary info
   if(is.null(trait_Ef)){
     if(!is.null(sim_result)){
