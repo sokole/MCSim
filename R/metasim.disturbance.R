@@ -23,6 +23,7 @@ metasim.disturbance <- function(
   scenario_name, # text string
   landscape_list, # list of landscapes to run in series
   time_interval_durations, # vector of integers representing the number of timesteps to use for each landscape in the landscape_list, same length as landscape_list
+  J.t0_initial = NULL,
   ...){
 
 my_scenario_ID <- paste0(scenario_name,'_', Sys.time() %>% format('%Y%m%d_%H%M%S'))
@@ -40,12 +41,24 @@ for (i_ts in 1:length(landscape_list)){
   }
   
   if(i_ts == 1){
-    sim_result_list[[i_ts]] <- MCSim::fn.metaSIM(
-      landscape = landscape_list[[i_ts]],
-      n.timestep = time_interval_durations[i_ts], 
-      scenario.ID = my_scenario_ID,
-      sim.ID = sim_id_name,
-      ...) 
+    
+    if(is.null(J.t0_initial)){
+      sim_result_list[[i_ts]] <- MCSim::fn.metaSIM(
+        landscape = landscape_list[[i_ts]],
+        n.timestep = time_interval_durations[i_ts], 
+        scenario.ID = my_scenario_ID,
+        sim.ID = sim_id_name,
+        ...) 
+    }else{
+      sim_result_list[[i_ts]] <- MCSim::fn.metaSIM(
+        landscape = landscape_list[[i_ts]],
+        n.timestep = time_interval_durations[i_ts], 
+        scenario.ID = my_scenario_ID,
+        sim.ID = sim_id_name,
+        J.t0 = J.t0_initial,
+        ...) 
+    }
+
   }else if(i_ts > 1){
     J_last_timestep_long <- sim_result_list[[i_ts - 1]]$J.long %>% 
       filter(timestep == max(timestep)) 
