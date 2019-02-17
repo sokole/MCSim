@@ -61,8 +61,8 @@ plot_coenoclines <- function(
 
   for (i.spp in 1:n_spp){
     max_val_tmp <- (fn_norm_curve(
-      mu = sim_result$dat.gamma.t0$trait.Ef[i.spp],
-      sigma = sim_result$dat.gamma.t0$trait.Ef.sd[i.spp],
+      mu = trait_Ef[i.spp], 
+      sigma = trait_Ef_sd[i.spp], 
       add = FALSE))$y %>% max()
     y_max_val <- max(c(y_max_val, max_val_tmp), na.rm = TRUE)
   }
@@ -82,8 +82,8 @@ plot_coenoclines <- function(
   # -- loop to plot each species' habitat preference
   for (i.spp in 1:nrow(sim_result$dat.gamma.t0)){
     fn_norm_curve(
-      mu = sim_result$dat.gamma.t0$trait.Ef[i.spp],
-      sigma = sim_result$dat.gamma.t0$trait.Ef.sd[i.spp],
+      mu = trait_Ef[i.spp], 
+      sigma = trait_Ef_sd[i.spp], 
       add = TRUE,
       col = mypal[i.spp])
   }
