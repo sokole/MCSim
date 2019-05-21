@@ -80,7 +80,7 @@ plot_coenoclines <- function(
   mypal <- rainbow(n_spp)
 
   # -- loop to plot each species' habitat preference
-  for (i.spp in 1:nrow(sim_result$dat.gamma.t0)){
+  for (i.spp in 1:n_spp){
     fn_norm_curve(
       mu = trait_Ef[i.spp], 
       sigma = trait_Ef_sd[i.spp], 
