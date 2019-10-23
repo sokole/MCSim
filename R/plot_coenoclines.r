@@ -82,7 +82,7 @@ plot_coenoclines <- function(
        main = 'Niche positions and widths',
        ...)
   
-  mypal <- rainbow(n_spp)
+  mypal <- grDevices::rainbow(n_spp)
   
   # -- loop to plot each species' habitat preference
   for (i.spp in 1:n_spp){
