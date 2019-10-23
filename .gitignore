@@ -4,5 +4,7 @@
 .Rhistory
 .RData
 .Ruserdata
-^SIM_OUTPUT$
-^my_sim_output_directory$
+/SIM_OUTPUT/*
+/my_sim_output_directory/*
+**/SIM_OUTPUT/*
+**/my_sim_output_directory/*

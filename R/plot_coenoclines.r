@@ -8,6 +8,7 @@
 #' @param trait_Ef numeric vector of niche positions of species in metacommunity, default is NULL
 #' @param trait_Ef_sd numeric vector of niche breadths, default is NULL
 #' @param plot_trait_Ef_sd_0s should species with niche-breadth of 0 be plotted? Default is FALSE
+#' @param y_max_val (optional) max value for y-axis
 #' 
 #' 
 #' @export
@@ -18,6 +19,7 @@ plot_coenoclines <- function(
     trait_Ef = NULL,
     trait_Ef_sd = NULL,
     plot_trait_Ef_sd_0s = FALSE,
+    y_max_val = NULL,
     ...){
     
   requireNamespace("magrittr")
@@ -58,16 +60,18 @@ plot_coenoclines <- function(
   }
 
   # # get y_max_val, minimum is 1
-  y_max_val <- 1
-  for (i.spp in 1:n_spp){
-    if(trait_Ef_sd[i.spp] > 0){
-      max_val_tmp <- (fn_norm_curve(
-        mu = trait_Ef[i.spp], 
-        sigma = trait_Ef_sd[i.spp],
-        from = min(Ef),
-        to = max(Ef),
-        add = FALSE))$y %>% max()
-      y_max_val <- max(c(y_max_val, max_val_tmp), na.rm = TRUE)
+  if(is.null(y_max_val)){
+    y_max_val <- 1
+    for (i.spp in 1:n_spp){
+      if(trait_Ef_sd[i.spp] > 0){
+        max_val_tmp <- (fn_norm_curve(
+          mu = trait_Ef[i.spp], 
+          sigma = trait_Ef_sd[i.spp],
+          from = min(Ef),
+          to = max(Ef),
+          add = FALSE))$y %>% max()
+        y_max_val <- max(c(y_max_val, max_val_tmp), na.rm = TRUE)
+      }
     }
   }
 

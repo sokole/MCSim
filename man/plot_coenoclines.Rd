@@ -6,7 +6,7 @@
 \usage{
 plot_coenoclines(sim_result = NULL, landscape = NULL, Ef = NULL,
   trait_Ef = NULL, trait_Ef_sd = NULL, plot_trait_Ef_sd_0s = FALSE,
-  ...)
+  y_max_val = NULL, ...)
 }
 \arguments{
 \item{sim_result}{output from a simulation, default is NULL}
@@ -20,6 +20,8 @@ plot_coenoclines(sim_result = NULL, landscape = NULL, Ef = NULL,
 \item{trait_Ef_sd}{numeric vector of niche breadths, default is NULL}
 
 \item{plot_trait_Ef_sd_0s}{should species with niche-breadth of 0 be plotted? Default is FALSE}
+
+\item{y_max_val}{(optional) max value for y-axis}
 }
 \description{
 plot standardized dispersal kernel
