@@ -1,2 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^R_script_in_development$
+^collaboration*
+^SIM_OUTPUT$
+^my_sim_output_directory$

@@ -1,9 +1,11 @@
 #' @title A metacommunity simulation for ecologists
 #' 
-#' @usage 
-#' fn.metaSIM(landscape, ...)
+#' @aliases fn.metaSIM
 #' 
-#' @description fn.metaSIM() initiates a metacommunity simulation based on a landscape
+#' @usage 
+#' metasim(landscape, ...)
+#' 
+#' @description metasim() initiates a metacommunity simulation based on a landscape
 #' created by the fn.make.landscape() function.
 #' 
 #' @param landscape Landscape object created by function fn.make.landscape()
@@ -36,7 +38,7 @@
 #' Note that a user can choose to save simulation output to a directory set by output.dir.path
 #' by setting save.sim = TRUE
 #' 
-fn.metaSIM <- function (
+metasim <- function (
   # -- unchanged vars
   landscape = NA, 
   scenario.ID = NA,
@@ -316,3 +318,7 @@ fn.metaSIM <- function (
     })
   }
 }
+
+#' assign alias function
+#' @export
+fn.metaSIM <- metasim

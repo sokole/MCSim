@@ -1,11 +1,11 @@
 Package: MCSim
 Title: Metacommunity simulations for ecologists
-Version: 0.4.3
+Version: 0.4.9
 Authors@R: 'Eric Sokol <sokole@gmail.com> [aut, cre]'
 Description: This package contains functions for lottery sampling type
     metacommunity simulations.
+Depends: dplyr, tidyr, magrittr, vegetarian, purrr, reshape2
 License: GPL-3
 LazyData: true
-RoxygenNote: 6.1.0
-Imports: tidyverse,
-    reshape2
+RoxygenNote: 6.1.1
+
