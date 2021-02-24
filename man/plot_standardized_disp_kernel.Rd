@@ -4,8 +4,13 @@
 \alias{plot_standardized_disp_kernel}
 \title{plot standardized dispersal kernel}
 \usage{
-plot_standardized_disp_kernel(w = NULL, sim_result = NULL,
-  landscape = NULL, distance_matrix = NULL, ...)
+plot_standardized_disp_kernel(
+  w = NULL,
+  sim_result = NULL,
+  landscape = NULL,
+  distance_matrix = NULL,
+  ...
+)
 }
 \arguments{
 \item{w}{dispersal kernel slope, default is NULL}

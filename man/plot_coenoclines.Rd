@@ -4,9 +4,16 @@
 \alias{plot_coenoclines}
 \title{plot standardized dispersal kernel}
 \usage{
-plot_coenoclines(sim_result = NULL, landscape = NULL, Ef = NULL,
-  trait_Ef = NULL, trait_Ef_sd = NULL, plot_trait_Ef_sd_0s = FALSE,
-  y_max_val = NULL, ...)
+plot_coenoclines(
+  sim_result = NULL,
+  landscape = NULL,
+  Ef = NULL,
+  trait_Ef = NULL,
+  trait_Ef_sd = NULL,
+  plot_trait_Ef_sd_0s = FALSE,
+  y_max_val = NULL,
+  ...
+)
 }
 \arguments{
 \item{sim_result}{output from a simulation, default is NULL}

@@ -4,13 +4,28 @@
 \alias{fn.metaSIM}
 \title{assign alias function}
 \usage{
-fn.metaSIM(landscape = NA, scenario.ID = NA, sim.ID = NA,
-  alpha.fisher = 1, nu = 1e-04, speciation.limit = 0,
-  JM.limit = 1e+05, n.timestep = 10, W.r = 0, save.sim = FALSE,
-  output.dir.path = "SIM_OUTPUT", trait.dispersal = NULL,
-  trait.dispersal.median = 1, trait.dispersal.range = 0,
-  trait.Ef = NULL, trait.Ef.sd = NULL, gamma.abund = NULL,
-  J.t0 = NULL, taxa.list = NULL, ...)
+fn.metaSIM(
+  landscape = NA,
+  scenario.ID = NA,
+  sim.ID = NA,
+  alpha.fisher = 1,
+  nu = 1e-04,
+  speciation.limit = 0,
+  JM.limit = 1e+05,
+  n.timestep = 10,
+  W.r = 0,
+  save.sim = FALSE,
+  output.dir.path = "SIM_OUTPUT",
+  trait.dispersal = NULL,
+  trait.dispersal.median = 1,
+  trait.dispersal.range = 0,
+  trait.Ef = NULL,
+  trait.Ef.sd = NULL,
+  gamma.abund = NULL,
+  J.t0 = NULL,
+  taxa.list = NULL,
+  ...
+)
 }
 \description{
 assign alias function

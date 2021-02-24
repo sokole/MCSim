@@ -2,6 +2,7 @@
 % Please edit documentation in R/functions_untb.R
 \name{as.count}
 \alias{as.count}
+\alias{is.count}
 \title{count}
 \usage{
 as.count(a, add = "")

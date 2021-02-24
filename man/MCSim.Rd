@@ -3,7 +3,6 @@
 \docType{package}
 \name{MCSim}
 \alias{MCSim}
-\alias{MCSim-package}
 \title{MCSim: A metacommunity simulation package}
 \description{
 The MCSim package provides functions necessary for running iterative, lottery-based metacommunity simulations

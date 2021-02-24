@@ -4,3 +4,5 @@
 ^collaboration*
 ^SIM_OUTPUT$
 ^my_sim_output_directory$
+^.*\.tar.gz$
+^.*\.zip$

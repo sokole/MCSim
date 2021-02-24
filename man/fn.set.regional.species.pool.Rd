@@ -37,8 +37,6 @@ dispersal values.}
 
 \item{trait.Ef.sd}{Vector or value of niche breadths}
 
-\item{taxa.list.prefix}{A character string to use as a prefix in species' names.}
-
 \item{taxa.list.prefix}{Text appended as prefix to species names to prevent errors for column names when site by species matrices are created. Default is "spp".}
 }
 \description{
