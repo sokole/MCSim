@@ -297,18 +297,18 @@ metasim <- function (
       
       # -- save metadata
       if (file.exists(filname.sim.metadata)) {
-        dat.sim.metadata <- read.csv(filname.sim.metadata, 
+        dat.sim.metadata <- utils::read.csv(filname.sim.metadata, 
                                      header = TRUE,
                                      stringsAsFactors = FALSE)
         if (!sim.result.name %in% row.names(dat.sim.metadata)) {
           dat.sim.metadata <- rbind(dat.sim.metadata, 
                                     metadata.long)
-          write.csv(dat.sim.metadata, 
+          utils::write.csv(dat.sim.metadata, 
                     filname.sim.metadata,
                     row.names = FALSE)
         }
       } else {
-        write.csv(metadata.long, 
+        utils::write.csv(metadata.long, 
                   filname.sim.metadata,
                   row.names = FALSE)
       }
