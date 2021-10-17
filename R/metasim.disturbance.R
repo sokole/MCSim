@@ -8,12 +8,12 @@
 #' @usage 
 #' metasim.disturbance(scenario_name, landscape_list, time_interval_durations)
 #' 
-#' @description Wrapper function for MCSim::fn.metaSIM, sends landscape list and interval duration list, along with other metaSim parameters that will be fixed across all simulations
+#' @description Wrapper function for MCSim::metasim, sends landscape list and interval duration list, along with other metasim parameters that will be fixed across all simulations
 #' 
 #' @param scenario_name text string naming the scenario
 #' @param landscape_list list of landscapes to run in series
 #' @param time_interval_durations vector of integers representing the number of timesteps to use for each landscape in the landscape_list, MUST be same length as landscape_list
-#' @param ... parameters sent to fn.metaSIM()
+#' @param ... parameters sent to metasim()
 #' 
 #' @export
 #' 
@@ -43,14 +43,14 @@ for (i_ts in 1:length(landscape_list)){
   if(i_ts == 1){
     
     if(is.null(J.t0_initial)){
-      sim_result_list[[i_ts]] <- MCSim::fn.metaSIM(
+      sim_result_list[[i_ts]] <- MCSim::metasim(
         landscape = landscape_list[[i_ts]],
         n.timestep = time_interval_durations[i_ts], 
         scenario.ID = my_scenario_ID,
         sim.ID = sim_id_name,
         ...) 
     }else{
-      sim_result_list[[i_ts]] <- MCSim::fn.metaSIM(
+      sim_result_list[[i_ts]] <- MCSim::metasim(
         landscape = landscape_list[[i_ts]],
         n.timestep = time_interval_durations[i_ts], 
         scenario.ID = my_scenario_ID,
@@ -73,7 +73,7 @@ for (i_ts in 1:length(landscape_list)){
       column_to_rownames('site') %>%
       as.data.frame()
     
-    sim_result_list[[i_ts]] <- MCSim::fn.metaSIM(
+    sim_result_list[[i_ts]] <- MCSim::metasim(
       landscape = landscape_list[[i_ts]],
       J.t0 = J_last_timestep_wide,
       n.timestep = time_interval_durations[i_ts], 

@@ -38,7 +38,7 @@ Define the attributes of a MCSim landscape, including number of sites, area, car
 }
 \details{
 There are two steps to creating a metacommunity simulation in MCSim:
-1. Make a "landscape" -- The landscape is the “game board” on which the simulation plays out, and it is created using the fn.make.landscape function.
-2. Run the simulation -- Once the landscape is created, you can pass the landscape object to fn.metaSIM along with parameter settings that define the rules for how metacommunity dynamics will play out in the metacommunity simulation. Note that the current version of MCSim is zero sum, which means there will always be JM individuals in the simulation during each generation.
+1. Make a "landscape" -- The landscape is the “game board” on which the simulation plays out, and it is created using the make.landscape function.
+2. Run the simulation -- Once the landscape is created, you can pass the landscape object to metaSIM along with parameter settings that define the rules for how metacommunity dynamics will play out in the metacommunity simulation. Note that the current version of MCSim is zero sum, which means there will always be JM individuals in the simulation during each generation.
 For a tutorial, see \url{http://rpubs.com/sokole/159425}
 }

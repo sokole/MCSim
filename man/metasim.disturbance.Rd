@@ -14,8 +14,8 @@ metasim.disturbance(scenario_name, landscape_list, time_interval_durations)
 
 \item{time_interval_durations}{vector of integers representing the number of timesteps to use for each landscape in the landscape_list, MUST be same length as landscape_list}
 
-\item{...}{parameters sent to fn.metaSIM()}
+\item{...}{parameters sent to metasim()}
 }
 \description{
-Wrapper function for MCSim::fn.metaSIM, sends landscape list and interval duration list, along with other metaSim parameters that will be fixed across all simulations
+Wrapper function for MCSim::metasim, sends landscape list and interval duration list, along with other metasim parameters that will be fixed across all simulations
 }
