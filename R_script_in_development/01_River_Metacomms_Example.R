@@ -70,69 +70,13 @@ MCSim::plot_coenoclines(
   trait_Ef = my_sim_result$dat.gamma.t0$trait.Ef[1:20],
   trait_Ef_sd = my_sim_result$dat.gamma.t0$trait.Ef.sd[1:20])
 
+# dot plot of sim results
+MCSim::plot_dot_plots(my_sim_result)
 
-# -----------------------------------------------------
-# -- make some dot blot plots
-# ----------------------------
-
-# -- extract timesteps to plot
-J.long <- filter(my_sim_result$J.long, timestep%in%c(1,2,max(timestep)))
-
-# -- group spp counts by time and site to calculate site count totals
-J.time.site <- group_by(J.long, timestep, site)
-JLs <- summarise(J.time.site, site.totals=sum(count))
-J.JLs <- full_join(J.long, JLs, by=c('timestep','site'))
-
-# -- calculate relative abundances (RAs) from counts and site totals, remove
-# observations with RAs of 0
-J.RAs.long<-J.JLs
-J.RAs.long$RA<-J.RAs.long$count/J.RAs.long$site.totals
-J.RAs.long<-filter(J.RAs.long, RA > 0)
-
-# -- add environmental data and species names for plotting
-J.RAs.long<-mutate(J.RAs.long, 
-                   spp.no = as.numeric(as.factor(spp)))
-
-# extract site info from the landscape object
-# rank sites locations along the env gradient
-site_info <- my_landscape$site.info %>%
-  mutate(Ef_rank = rank(Ef))
-
-# extract starting regional species pool from sim object
-# rank spp positions along env gradient
-spp_info <- my_sim_result$dat.gamma.t0 %>%
-  mutate(trait_rank = rank(trait.Ef))
-
-# J.RAs.long$region <- d.site.1D[J.RAs.long$site, 'region']
-J.RAs.long$Ef_rank <- site_info[J.RAs.long$site, 'Ef_rank']
-J.RAs.long$trait_rank <- spp_info[J.RAs.long$spp,'trait_rank']
-
-# -- make a species characteristic data frame for labeling the spp axis
-d.spp.RAs <- as.data.frame(J.RAs.long %>% 
-                             group_by(spp) %>% 
-                             summarise(max.RA = max(RA),
-                                       spp.no = spp.no[1],
-                                       trait_rank = trait_rank[1]))
-
-# -- only label species with RAs over 0.40
-spp.labels <- dplyr::filter(d.spp.RAs, max.RA > .4)
-
-# -- make plot
-p <- ggplot(J.RAs.long, aes(trait_rank, 
-                            Ef_rank, 
-                            size = RA))
-
-p + geom_point() + 
-  facet_grid(. ~ timestep) +
-  theme(axis.text.x = element_text(size = 8)) +
-  theme(axis.text.y = element_text(size = 6)) +
-  scale_size('Relative\nAbundance', range = c(.5,4)) +
-  labs(title = 'Simulated Metacommunity Simulation\nNo. generations ( ---> )',
-       x = 'Site ID',
-       y = 'Species ID') +
-  scale_y_continuous(
-    breaks = spp.labels$env.rank,
-    labels = spp.labels$spp) +
-  theme_bw()
+# choolse timesteps and RA threshold for taxa label
+MCSim::plot_dot_plots(
+  my_sim_result, 
+  timesteps = c(1:3,8,10),
+  spp_label_threshold_RA = 0.30)
 
 
