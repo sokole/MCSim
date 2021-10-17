@@ -11,15 +11,15 @@
 #' 
 #' @export
 plot_standardized_disp_kernel <- function(
-  w = NULL,
   sim_result = NULL,
+  w = NULL,
   landscape = NULL,
   distance_matrix = NULL,
   ...){
   
-  requireNamespace("magrittr")
+  # requireNamespace("magrittr")
   
-  w_ordered <- c(w, sim_result$W.r) %>% unique() %>% sort(decreasing = TRUE)
+  w_ordered <- c(w, sim_result$W.r) %>% unique() %>% sort(decreasing = TRUE) %>% na.omit()
   stopifnot({length(w_ordered) > 0})
   
   w_max <- max(w_ordered)

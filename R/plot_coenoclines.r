@@ -22,8 +22,6 @@ plot_coenoclines <- function(
     y_max_val = NULL,
     ...){
     
-  requireNamespace("magrittr")
-  
   # check for necessary info
   if(is.null(trait_Ef)){
     if(!is.null(sim_result)){
@@ -46,8 +44,8 @@ plot_coenoclines <- function(
   if(is.null(Ef)){
     if(!is.null(landscape)){
       Ef <- landscape$site.info$Ef
-    }else if(!is.null(sim.result)){
-      Ef <- sim.result$landscape$site.info$Ef
+    }else if(!is.null(sim_result)){
+      Ef <- sim_result$landscape$site.info$Ef
     }
   }
   

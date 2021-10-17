@@ -6,9 +6,9 @@
 #' metasim(landscape, ...)
 #' 
 #' @description metasim() initiates a metacommunity simulation based on a landscape
-#' created by the fn.make.landscape() function.
+#' created by the make.landscape() function.
 #' 
-#' @param landscape Landscape object created by function fn.make.landscape()
+#' @param landscape Landscape object created by function make.landscape()
 #' @param scenario.ID A name for the simulation scenario. All simulations with the same scenario name will have metadata collated in a single .csv file. Default is NA
 #' @param sim.ID A name for this particular simulation. Default will provide a random ID.
 #' @param alpha.fisher User can use Fisher's alpha to seed a simulation's initial regional source pool.
@@ -28,15 +28,54 @@
 #' @param J.t0 Site by species data.table or matrix that can be used to seed a simulation
 #' @param taxa.list A character vector of names for species
 #' 
-#' @export
-#' 
 #' @details There are two steps to creating a metacommunity simulation in MCSim:
-#' 1. Make a "landscape" -- The landscape is the “game board” on which the simulation plays out, and it is created using the fn.make.landscape function.
-#' 2. Run the simulation -- Once the landscape is created, you can pass the landscape object to fn.metaSIM along with parameter settings that define the rules for how metacommunity dynamics will play out in the metacommunity simulation. Note that the current version of MCSim is zero sum, which means there will always be JM individuals in the simulation during each generation.
+#' 1. Make a "landscape" -- The landscape is the “game board” on which the simulation plays out, and it is created using the make.landscape function.
+#' 2. Run the simulation -- Once the landscape is created, you can pass the landscape object to metaSIM along with parameter settings that define the rules for how metacommunity dynamics will play out in the metacommunity simulation. Note that the current version of MCSim is zero sum, which means there will always be JM individuals in the simulation during each generation.
 #' For a tutorial, see \url{http://rpubs.com/sokole/159425}
 #' 
 #' Note that a user can choose to save simulation output to a directory set by output.dir.path
 #' by setting save.sim = TRUE
+#' 
+#' @export
+#' 
+#' @examples 
+#' \dontrun{
+#' set.seed(1234) #set random seed
+#' 
+#' # make a landscape
+#' my.landscape <- make.landscape(
+#'   site.coords = data.frame(
+#'     x = c(1, 2, 3, 4, 5),
+#'     y = c(1, 3, 1, 5, 2)),
+#'   Ef = c(-.8, -.6, 0, .25, .9),
+#'   m = 0.5,
+#'   JM = 10000)
+#' 
+#' # niche positions, niche breadths, and relative abundances for three species
+#' niche.positions <-  c(-.5, 0, .5)
+#' niche.breadths <- c(.2, .2, 5)
+#' regional.rel.abund <- c(.8, .1, .1)
+#' 
+#' # run a simulation with 10 generations
+#' sim.result <- metasim(
+#'   landscape = my.landscape,
+#'   trait.Ef = niche.positions,
+#'   trait.Ef.sd = niche.breadths,
+#'   gamma.abund = regional.rel.abund,
+#'   W.r = 0,
+#'   nu = 0.001,
+#'   n.timestep = 10,
+#'   sim.ID = "my_test_sim",
+#'   output.dir.path = "my_sim_output_directory"
+#' )
+#' 
+#' 
+#' # plot coenoclines to view niches
+#' plot_coenoclines(sim.result)
+#' 
+#' # plot dispersal kernal
+#' plot_standardized_disp_kernel(sim.result)
+#' }
 #' 
 metasim <- function (
   # -- unchanged vars
@@ -261,25 +300,41 @@ metasim <- function (
           data.frame(
             param.name=names(siteinfo.metadata),
             param.stat='mean',
-            param.stat.val=t(dplyr::summarise_all(siteinfo.metadata, dplyr::funs(mean))),
+            param.stat.val=t(dplyr::summarise(
+              siteinfo.metadata, 
+              dplyr::across(
+                dplyr::everything(),
+                function(x)mean(x,na.rm=TRUE)))),
             row.names=NULL
           ),
           data.frame(
             param.name=names(siteinfo.metadata),
             param.stat='sd',
-            param.stat.val=t(dplyr::summarise_all(siteinfo.metadata, dplyr::funs(sd))),
+            param.stat.val=t(dplyr::summarise(
+              siteinfo.metadata, 
+              dplyr::across(
+                dplyr::everything(),
+                function(x)sd(x,na.rm=TRUE)))),
             row.names=NULL
           ),
           data.frame(
             param.name=names(gamma.metadata),
             param.stat='mean',
-            param.stat.val=t(dplyr::summarise_all(gamma.metadata, dplyr::funs(mean))),
+            param.stat.val=t(dplyr::summarise(
+              gamma.metadata, 
+              dplyr::across(
+                dplyr::everything(),
+                function(x)mean(x,na.rm=TRUE)))),
             row.names=NULL
           ),
           data.frame(
             param.name=names(gamma.metadata),
             param.stat='sd',
-            param.stat.val=t(dplyr::summarise_all(gamma.metadata, dplyr::funs(sd))),
+            param.stat.val=t(dplyr::summarise(
+              gamma.metadata, 
+              dplyr::across(
+                dplyr::everything(),
+                function(x)sd(x,na.rm=TRUE)))),
             row.names=NULL
           ))
       )
