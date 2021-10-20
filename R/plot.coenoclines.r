@@ -76,9 +76,14 @@ plot.coenoclines <- function(
   n.spp <- length(trait.Ef)
 
   # -- function for plotting bell curves
-  fn.norm.curve <- function(sigma=1, mu = 0,...) {
+  fn.norm.curve <- function(sigma = 1, mu = 0,...) {
     curve(
       (1/sigma * sqrt(2 * pi)) * exp((-1  *(x - mu)^2) / (2 * sigma^2)), ...) #formula for bell curve
+  }
+  
+  fn.norm.curve.no.plot <- function(x = NULL, sigma = 1, mu = 0, n = 101, from = 0, to = 1, ...) {
+    if(is.null(x)) x <- seq(from = from, to = to, length.out = n)
+    list(y = (1/sigma * sqrt(2 * pi)) * exp((-1  *(x - mu)^2) / (2 * sigma^2))) #formula for bell curve
   }
 
   # # get y.max.val, minimum is 1
@@ -86,12 +91,11 @@ plot.coenoclines <- function(
     y.max.val <- 1
     for (i.spp in 1:n.spp){
       if(trait.Ef.sd[i.spp] > 0){
-        max.val.tmp <- (fn.norm.curve(
+        max.val.tmp <- (fn.norm.curve.no.plot(
           mu = trait.Ef[i.spp], 
           sigma = trait.Ef.sd[i.spp],
           from = min(Ef),
-          to = max(Ef),
-          add = FALSE))$y %>% max()
+          to = max(Ef)))$y %>% max()
         y.max.val <- max(c(y.max.val, max.val.tmp), na.rm = TRUE)
       }
     }
