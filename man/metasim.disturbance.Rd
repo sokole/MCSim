@@ -5,14 +5,24 @@
 \alias{fn.metaSIM.disturbance}
 \title{A metacommunity simulation for ecologists}
 \usage{
-metasim.disturbance(scenario_name, landscape_list, time_interval_durations)
+metasim.disturbance(scenario.name, landscape.list, time.interval.durations)
 }
 \arguments{
-\item{scenario_name}{text string naming the scenario}
+\item{scenario.name}{text string naming the scenario}
 
-\item{landscape_list}{list of landscapes to run in series}
+\item{landscape.list}{list of landscapes to run in series}
 
-\item{time_interval_durations}{vector of integers representing the number of timesteps to use for each landscape in the landscape_list, MUST be same length as landscape_list}
+\item{time.interval.durations}{vector of integers representing the number of timesteps to use for each landscape in the landscape_list, MUST be same length as landscape_list}
+
+\item{J.t0.initial}{Initial species abundance matrix for timestep "t0"}
+
+\item{scenario_name}{DEPRECATED: use \code{scenario.name}}
+
+\item{landscape_list}{DEPRECATED: use \code{landscape.list}}
+
+\item{time_interval_durations}{DEPRECATED: use \code{time.interval.durations}}
+
+\item{J.t0_initial}{Deprecated: use \code{J.t0.initial}}
 
 \item{...}{parameters sent to metasim()}
 }
@@ -46,9 +56,9 @@ niche.breadths <- c(.2, .2, 5)
 regional.rel.abund <- c(.8, .1, .1)
 
 sim.result <- metasim.disturbance(
-  scenario_name = "niche_shift",
-  landscape_list = list(my.landscape.1,my.landscape.2),
-  time_interval_durations = c(10,10),
+  scenario.name = "niche_shift",
+  landscape.list = list(my.landscape.1,my.landscape.2),
+  time.interval.durations = c(10,10),
   trait.Ef = niche.positions,
   trait.Ef.sd = niche.breadths,
   gamma.abund = regional.rel.abund,

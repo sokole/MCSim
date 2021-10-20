@@ -71,10 +71,13 @@
 #' 
 #' 
 #' # plot coenoclines to view niches
-#' plot_coenoclines(sim.result)
+#' plot.coenoclines(sim.result)
 #' 
 #' # plot dispersal kernal
-#' plot_standardized_disp_kernel(sim.result)
+#' plot.standardized.disp.kernel(sim.result)
+#' 
+#' # plot dot plots
+#' plot.dot.plots(sim.result)
 #' }
 #' 
 metasim <- function (

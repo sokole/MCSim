@@ -2,35 +2,35 @@
 #' 
 #' @description plot dot plots of selected timesteps from an MCSim simulation
 #' 
-#' @param sim_result output from a simulation
+#' @param sim.result output from a simulation
 #' @param timesteps (array of integers) timesteps to plot. Default is "NA" and will auto select timesteps
-#' @param spp_label_threshold_RA (numeric) the relative abundance (RA) cutoff for taxa to label on the plot. Devault is to label taxa with a max RA >= 0.40
+#' @param spp.label.threshold.RA (numeric) the relative abundance (RA) cutoff for taxa to label on the plot. Devault is to label taxa with a max RA >= 0.40
 #' 
 #' @export
 #' 
 #' @examples 
 #' \dontrun{
-#' plot_dot_plots(my_sim_result) 
+#' plot.dot.plots(my_sim_result) 
 #' }
-plot_dot_plots <- function(
-  sim_result,
+plot.dot.plots <- function(
+  sim.result,
   timesteps = NA_integer_,
-  spp_label_threshold_RA = 0.40
+  spp.label.threshold.RA = 0.40
   ){
   
   # clean up timesteps argument
   if(all(is.na(timesteps))){
-    timesteps <- c(1,2,10, 100, max(sim_result$J.long$timestep)) %>% unique() %>% stats::na.omit()
+    timesteps <- c(1,2,10, 100, max(sim.result$J.long$timestep)) %>% unique() %>% stats::na.omit()
   }else{
     timesteps <- timesteps %>% unique() %>% stats::na.omit()
   }
   
   # make sure timesteps exist, only use those in the dataset
-  timesteps <- timesteps %>% dplyr::intersect(unique(sim_result$J.long$timestep)) 
+  timesteps <- timesteps %>% dplyr::intersect(unique(sim.result$J.long$timestep)) 
   
   
   # -- extract timesteps to plot
-  J.long <- dplyr::filter(sim_result$J.long, .data$timestep %in% timesteps)
+  J.long <- dplyr::filter(sim.result$J.long, .data$timestep %in% timesteps)
   
   # -- group spp counts by time and site to calculate site count totals
   J.time.site <- dplyr::group_by(J.long, .data$timestep, .data$site)
@@ -53,12 +53,12 @@ plot_dot_plots <- function(
   
   # browser()
   
-  if("landscape" %in% names(sim_result)){
-    site_info <- sim_result$landscape$site.info %>%
-      dplyr::mutate(Ef_rank = rank(.data$Ef))
-  }else if("landscape.list" %in% names(sim_result)){
-    site_info <- sim_result$landscape.list[[1]]$site.info %>%
-      dplyr::mutate(Ef_rank = rank(.data$Ef))
+  if("landscape" %in% names(sim.result)){
+    site.info <- sim.result$landscape$site.info %>%
+      dplyr::mutate(Ef.rank = rank(.data$Ef))
+  }else if("landscape.list" %in% names(sim.result)){
+    site.info <- sim.result$landscape.list[[1]]$site.info %>%
+      dplyr::mutate(Ef.rank = rank(.data$Ef))
     message("WARNING: this sim result includes a changing landscape, this plotting function is has not been optimized for changing landscapes and the plot will be based on the initial landscape configuration")
   }
   
@@ -67,18 +67,18 @@ plot_dot_plots <- function(
   # extract starting regional species pool from sim object
   # rank spp positions along env gradient
   
-  if("dat.gamma.t0" %in% names(sim_result)){
-    spp_info <- sim_result$dat.gamma.t0 %>%
-      dplyr::mutate(trait_rank = rank(trait.Ef))
-  }else if("dat.gamma.t0.list" %in% names(sim_result)){
-    spp_info <- sim_result$dat.gamma.t0.list[[1]]$dat.gamma.t0 %>%
-      dplyr::mutate(trait_rank = rank(.data$trait.Ef))
+  if("dat.gamma.t0" %in% names(sim.result)){
+    spp.info <- sim.result$dat.gamma.t0 %>%
+      dplyr::mutate(trait.rank = rank(trait.Ef))
+  }else if("dat.gamma.t0.list" %in% names(sim.result)){
+    spp.info <- sim.result$dat.gamma.t0.list[[1]]$dat.gamma.t0 %>%
+      dplyr::mutate(trait.rank = rank(.data$trait.Ef))
   }
 
   
   # J.RAs.long$region <- d.site.1D[J.RAs.long$site, 'region']
-  J.RAs.long$Ef_rank <- site_info[J.RAs.long$site, 'Ef_rank']
-  J.RAs.long$trait_rank <- spp_info[J.RAs.long$spp,'trait_rank']
+  J.RAs.long$Ef.rank <- site.info[J.RAs.long$site, 'Ef.rank']
+  J.RAs.long$trait.rank <- spp.info[J.RAs.long$spp,'trait.rank']
   
   # -- make a species characteristic data frame for labeling the spp axis
   d.spp.RAs <- as.data.frame(
@@ -86,17 +86,17 @@ plot_dot_plots <- function(
       dplyr::group_by(.data$spp) %>% 
       dplyr::summarize(max.RA = max(.data$RA),
                        spp.no = .data$spp.no[1],
-                       trait_rank = .data$trait_rank[1]))
+                       trait_rank = .data$trait.rank[1]))
   
   # -- only label species with RAs over 0.40
-  spp.labels <- dplyr::filter(d.spp.RAs, max.RA >= spp_label_threshold_RA)
+  spp.labels <- dplyr::filter(d.spp.RAs, max.RA >= spp.label.threshold.RA)
   
   # -- make plot
   p <- ggplot2::ggplot(
     J.RAs.long, 
     ggplot2::aes(
-      as.factor(.data$trait_rank), 
-      as.factor(.data$Ef_rank), 
+      as.factor(.data$trait.rank), 
+      as.factor(.data$Ef.rank), 
       size = .data$RA))
   
   p <- p + 
@@ -107,12 +107,12 @@ plot_dot_plots <- function(
       title = paste(
         stats::na.omit(c(
         "Metacommunity Simulation",
-        sim_result$scenario.ID,
+        sim.result$scenario.ID,
         "\nNo. generations ( ---> )")), collapse = " "),
          y = 'Site ID',
          x = 'Species ID') +
     ggplot2::scale_x_discrete(
-      breaks = spp.labels$trait_rank,
+      breaks = spp.labels$trait.rank,
       labels = spp.labels$spp) +
     ggplot2::theme_bw() +
     ggplot2::coord_flip()
