@@ -50,25 +50,29 @@ plot_dot_plots <- function(
   
   # extract site info from the landscape object
   # rank sites locations along the env gradient
+  
+  # browser()
+  
   if("landscape" %in% names(sim_result)){
     site_info <- sim_result$landscape$site.info %>%
       dplyr::mutate(Ef_rank = rank(.data$Ef))
   }else if("landscape.list" %in% names(sim_result)){
-    site_info <- sim_result$landscape_list[[1]]$site.info %>%
+    site_info <- sim_result$landscape.list[[1]]$site.info %>%
       dplyr::mutate(Ef_rank = rank(.data$Ef))
-    message("Your sim result includes a changing landscape, this plotting function is has not been optimized for changing landscapes and the plot will be based on the initial landscape configuration")
+    message("WARNING: this sim result includes a changing landscape, this plotting function is has not been optimized for changing landscapes and the plot will be based on the initial landscape configuration")
   }
   
   
+
   # extract starting regional species pool from sim object
   # rank spp positions along env gradient
   
   if("dat.gamma.t0" %in% names(sim_result)){
     spp_info <- sim_result$dat.gamma.t0 %>%
-      mutate(trait_rank = rank(trait.Ef))
+      dplyr::mutate(trait_rank = rank(trait.Ef))
   }else if("dat.gamma.t0.list" %in% names(sim_result)){
-    spp_info <- sim_result$dat.gamma.t0.list[[1]]
-      mutate(trait_rank = rank(trait.Ef))
+    spp_info <- sim_result$dat.gamma.t0.list[[1]]$dat.gamma.t0 %>%
+      dplyr::mutate(trait_rank = rank(.data$trait.Ef))
   }
 
   
@@ -100,7 +104,11 @@ plot_dot_plots <- function(
     ggplot2::facet_grid(. ~ .data$timestep) +
     ggplot2::scale_size('Relative\nAbundance', range = c(.5,4)) +
     ggplot2::labs(
-      title = 'Simulated Metacommunity Simulation\nNo. generations ( ---> )',
+      title = paste(
+        stats::na.omit(c(
+        "Metacommunity Simulation",
+        sim_result$scenario.ID,
+        "\nNo. generations ( ---> )")), collapse = " "),
          y = 'Site ID',
          x = 'Species ID') +
     ggplot2::scale_x_discrete(

@@ -24,8 +24,13 @@ plot_coenoclines <- function(
     
   # check for necessary info
   if(is.null(trait_Ef)){
+    
     if(!is.null(sim_result)){
-      trait_Ef <- sim_result$dat.gamma.t0$trait.Ef
+      if("dat.gamma.t0" %in% names(sim_result)){
+        trait_Ef <- sim_result$dat.gamma.t0$trait.Ef
+      }else if("dat.gamma.t0.list" %in% names(sim_result)){
+        trait_Ef <- sim_result$dat.gamma.t0.list[[1]]$dat.gamma.t0$trait.Ef
+      }
     }else{
       stop('no value provided for trait_Ef')
     }
@@ -34,7 +39,12 @@ plot_coenoclines <- function(
   # check for necessary info
   if(is.null(trait_Ef_sd)){
     if(!is.null(sim_result)){
-      trait_Ef_sd <- sim_result$dat.gamma.t0$trait.Ef.sd
+      
+      if("dat.gamma.t0" %in% names(sim_result)){
+        trait_Ef_sd <- sim_result$dat.gamma.t0$trait.Ef.sd
+      }else if("dat.gamma.t0.list" %in% names(sim_result)){
+        trait_Ef_sd <- sim_result$dat.gamma.t0.list[[1]]$dat.gamma.t0$trait.Ef.sd
+      }
     }else{
       stop('no value provided for trait_Ef_sd')
     }
@@ -45,10 +55,20 @@ plot_coenoclines <- function(
     if(!is.null(landscape)){
       Ef <- landscape$site.info$Ef
     }else if(!is.null(sim_result)){
-      Ef <- sim_result$landscape$site.info$Ef
+      if("landscape" %in% names(sim_result)){
+        site_info <- sim_result$landscape$site.info %>%
+          dplyr::mutate(Ef_rank = rank(.data$Ef))
+      }else if("landscape.list" %in% names(sim_result)){
+        site_info <- sim_result$landscape.list[[1]]$site.info %>%
+          dplyr::mutate(Ef_rank = rank(.data$Ef))
+        message("WARNING: this sim result includes a changing landscape, this plotting function is has not been optimized for changing landscapes and the plot will be based on the initial landscape configuration")
+      }
+      Ef <- site_info$Ef
     }
   }
   
+  
+
   n_spp <- length(trait_Ef)
 
   # -- function for plotting bell curves
@@ -73,6 +93,7 @@ plot_coenoclines <- function(
     }
   }
 
+  
   # -- Initialize plot of coenoclines
 
   plot(1,1,
@@ -86,6 +107,8 @@ plot_coenoclines <- function(
   
   mypal <- grDevices::rainbow(n_spp)
   
+  
+
   # -- loop to plot each species' habitat preference
   for (i.spp in 1:n_spp){
     if(trait_Ef_sd[i.spp] > 0){
@@ -101,6 +124,7 @@ plot_coenoclines <- function(
     }
   }
 
+  
   # -- plot sites along the x-axis
   rug(Ef)
 }
