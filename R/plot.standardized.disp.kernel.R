@@ -2,6 +2,9 @@
 #' 
 #' @description plot standardized dispersal kernel. Requires either (1) a sim.result, (2) a landsca;e and dispersal kernel slope(s) (w), or (3) a distance.matrix and dispersal kernel slope(s) (w).
 #' 
+#' @usage 
+#' plot.standardized.disp.kernel(sim.result)
+#' 
 #' @param w dispersal kernel slope, default is NULL
 #' @param sim.result simulation output, default is NULL
 #' @param landscape a landscape object, default is NULL
@@ -10,6 +13,7 @@
 #' 
 #' 
 #' @export
+#' 
 plot.standardized.disp.kernel <- function(
   sim.result = NULL,
   w = NULL,

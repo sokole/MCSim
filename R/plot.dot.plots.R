@@ -2,6 +2,9 @@
 #' 
 #' @description plot dot plots of selected timesteps from an MCSim simulation
 #' 
+#' @usage 
+#' plot.dot.plots(sim.result)
+#' 
 #' @param sim.result output from a simulation
 #' @param timesteps (array of integers) timesteps to plot. Default is "NA" and will auto select timesteps
 #' @param spp.label.threshold.RA (numeric) the relative abundance (RA) cutoff for taxa to label on the plot. Devault is to label taxa with a max RA >= 0.40
@@ -12,6 +15,7 @@
 #' \dontrun{
 #' plot.dot.plots(my_sim_result) 
 #' }
+#' 
 plot.dot.plots <- function(
   sim.result,
   timesteps = NA_integer_,

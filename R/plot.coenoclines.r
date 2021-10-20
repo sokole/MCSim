@@ -2,6 +2,9 @@
 #' 
 #' @description plot standardized dispersal kernel
 #' 
+#' @usage 
+#' plot.coenoclines(sim.result)
+#' 
 #' @param sim.result output from a simulation, default is NULL
 #' @param landscape a landscape object, default is NULL
 #' @param Ef numeric vector of environmental filter values for sites in a simulation result, default is NULL
@@ -12,6 +15,7 @@
 #' 
 #' 
 #' @export
+#' 
 plot.coenoclines <- function(
     sim.result = NULL,
     landscape = NULL,

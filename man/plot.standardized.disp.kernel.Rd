@@ -4,13 +4,7 @@
 \alias{plot.standardized.disp.kernel}
 \title{plot standardized dispersal kernel}
 \usage{
-\method{plot}{standardized.disp.kernel}(
-  sim.result = NULL,
-  w = NULL,
-  landscape = NULL,
-  distance.matrix = NULL,
-  ...
-)
+plot.standardized.disp.kernel(sim.result)
 }
 \arguments{
 \item{sim.result}{simulation output, default is NULL}

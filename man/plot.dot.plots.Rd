@@ -4,7 +4,7 @@
 \alias{plot.dot.plots}
 \title{plot dot plots}
 \usage{
-\method{plot}{dot.plots}(sim.result, timesteps = NA_integer_, spp.label.threshold.RA = 0.4)
+plot.dot.plots(sim.result)
 }
 \arguments{
 \item{sim.result}{output from a simulation}
@@ -20,4 +20,5 @@ plot dot plots of selected timesteps from an MCSim simulation
 \dontrun{
 plot.dot.plots(my_sim_result) 
 }
+
 }
