@@ -12,7 +12,7 @@
 #' 
 #' 
 #' 
-#' @export
+#' @export plot.standardized.disp.kernel
 #' 
 plot.standardized.disp.kernel <- function(
   sim.result = NULL,

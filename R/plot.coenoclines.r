@@ -14,7 +14,7 @@
 #' @param y.max.val (optional) max value for y-axis
 #' 
 #' 
-#' @export
+#' @export plot.coenoclines
 #' 
 plot.coenoclines <- function(
     sim.result = NULL,

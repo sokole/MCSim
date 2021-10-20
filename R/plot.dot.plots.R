@@ -9,7 +9,7 @@
 #' @param timesteps (array of integers) timesteps to plot. Default is "NA" and will auto select timesteps
 #' @param spp.label.threshold.RA (numeric) the relative abundance (RA) cutoff for taxa to label on the plot. Devault is to label taxa with a max RA >= 0.40
 #' 
-#' @export
+#' @export plot.dot.plots
 #' 
 #' @examples 
 #' \dontrun{
