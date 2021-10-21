@@ -1,0 +1,369 @@
+---
+title: "MCSim-intro"
+author: "Eric R. Sokol"
+date: "20 October, 2021"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MCSim-intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+***
+# Background
+***
+![](https://sites.google.com/site/metacommunitysimulation/_/rsrc/1378770379396/home/Metacommunity_dynamics.png?height=200)
+
+In ecology, a metacommunity is a network of communities of organisms that are interconnected by dispersal and colonization dynamics (Leibold et al. 2004). Here I describe a metacommunity simulation package (`MCSim`) for the [R](https://www.r-project.org/) statistical language. The current version of `MCSim` can create lottery-based simulations of metacommunities, which can be used to test assumptions about the emergent patterns of metacommunities. See our paper in Ecological Modelling ([Sokol et al. 2015](http://dx.doi.org/10.1016/j.ecolmodel.2014.10.022)). 
+
+This simulation is a zero-sum, individual-oriented, iterative, lottery-based simulation. That means that the number of individuals in the simulated metacommunity remains constant through time and each time step is a complete, synchronous generation for the entire metacommunity. A lottery process moves the simulation forward in time with each time step, allowing for stochastic metacommunity dynamics to occur. However, environmental filtering can also be built into the simulation, allowing for deterministic species sorting to occur. 
+
+Please find the most recent releases of `MCSim` [here](https://github.com/sokole/MCSim/releases), and the current version under development at [https://github.com/sokole/MCSim](https://github.com/sokole/MCSim).  
+
+***
+# Getting started
+***
+In order to install the current version of `MCSim` from GitHub, you will need to have the `devtools` package installed.
+`install.packages("devtools")`. The `remotes` package provides another option for installing packages from GitHub.
+
+Once `devtools` is installed, you can install the current version of `MCSim`
+```{r eval=FALSE}
+
+# -- Install the current dev version of MCSim
+devtools::install_github('sokole/MCSim')
+
+# -- Install the version used in this tutorial
+devtools::install_github('sokole/MCSim@v0.5')
+# v0.5 is used in this demo
+```
+After installing the package, make sure you can load it in your R environment. 
+```{r}
+library(MCSim)
+```
+
+## Running a simulation
+There are two steps to creating a metacommunity simulation in MCSim:
+
+1. Make a "landscape" using `make.landscape`
+2. Run a simulation using `metasim`
+
+### 1. Making a "landscape"
+The landscape is the "game board" on which the simulation plays out and it is created using the `make.landscape` function. A landscape can be made from a `data.frame`, for example:
+
+```{r cache=TRUE}
+# A data frame with coordinates for 5 sites
+xy.coordinates <- data.frame(
+  x = c(1, 2, 3, 4, 5),
+  y = c(1, 3, 1, 5, 2))
+
+print(xy.coordinates)
+```
+
+Here are the sites that will make up the landscape plotted in xy space:
+```{r}
+plot(y ~ x, xy.coordinates)
+```
+
+When making a landscape, we have to embed additional information about the simulation in the landscape so that MCSim can keep track of site characteristics, in addition to their location. For example, `m` can be used to specify an immigration rate and `JM` can be used to specify the metacommunity size (see Hubbell 2001), where `JM` is the number of individual organisms that inhabit the metacommunity.
+```{r results='hide', cache=TRUE}
+my.landscape <- MCSim::make.landscape(
+  site.coords = xy.coordinates,
+  m = 0.5,
+  JM = 1000000)
+```
+```{r}
+print(my.landscape)
+```
+
+The elements of a landscape include:  
+
+* `$site.info`, a data table of site characteristics.  
+* `$site.coords`, the xy-coordinates of the sites.  
+* `$dist.mat`, a distance matrix or a connectivity matrix created in `igraph`  
+* `$list.of.stuff`, a list that can be used to store extra information about the landscape, such as the properties of an `igraph` tree.  
+
+The `$site.info` element of the list that is returned by `make.landscape` includes:  
+
+* `site.ID`, site labels  
+* `area.m2`, the area of a site. This only matters if immigration is defined as no. individuals / m2  
+* `JL`, the number of individuals that make each individual community  
+* `Ef`, the "position" of a site along an environmental gradient that determines how the _environmental filter_ will weight the lottery selection of species in the available source pool based on their habitat preferences, or "niche positions".  
+* `Ef.specificity`, the specificity, or strength, of the environmental filter. Default value is 0, which makes the filter select for a single point on the environmental gradient.  
+* `IL`, the immigration rate at each site in individuals / m2  
+* `m`, the immigration rate at each site reported as Hubbell's _m_  
+
+Vectors defining site properties can also be passed to `make.landscape`, for example:
+```{r results='hide', cache=TRUE}
+my.landscape <- MCSim::make.landscape(
+  site.coords = xy.coordinates,
+  m = c(0.5, 0.5, 0.1, 0.1, 0.01),
+  Ef = c(-1, -.25, .1, 1, 2),
+  JM = 1000000)
+```
+```{r}
+print(my.landscape$site.info)
+```
+
+Note that `make.landscape` will return an exclamation in the affirmative if it successfully creates a landscape. 
+
+There are alternative methods to creating a landscape, such as using `igraph` to create a connectivity matrix that can be passed to `make.landscape` as a distance matrix. These methods will be explained in detail in a subsequent tutorial. 
+
+### 2. Running a metacommunity simulation
+Once the landscape is created, you can pass the landscape object to the `metasim` function along with parameter settings that define the rules for how metacommunity dynamics will play out in the metacommunity simulation. Note that the current version of `MCSim` is zero sum, which means there will always be _JM_ individuals in the simulation during each generation.
+
+```{r results='hide', cache=TRUE}
+set.seed(1234) #set random seed
+
+# make a landscape
+my.landscape <- MCSim::make.landscape(
+  site.coords = xy.coordinates,
+  m = 0.5,
+  JM = 1000000)
+
+# niche positions, niche breadths, and relative abundances for three species
+niche.positions <-  c(-.5, 0, .5)
+niche.breadths <- c(.2, .2, 5)
+regional.rel.abund <- c(.8, .1, .1)
+
+# run a simulation with 10 generations
+sim.result <- MCSim::metasim(
+  landscape = my.landscape,
+  trait.Ef = niche.positions,
+  trait.Ef.sd = niche.breadths, 
+  gamma.abund = regional.rel.abund,
+  W.r = 0,
+  nu = 0.001,
+  n.timestep = 10, 
+  sim.ID = "my_test_sim",
+  output.dir.path = "my_sim_output_directory" 
+)
+```
+
+To run a simulation, we have to define:  
+
+* _The players and their traits_, `niche.positions`, `niche.breadths`, and `gamma.abund` define the regional species pool that seeds the simulation. 
+* _How the players move among sites_, `W.r` is the slope of the dispersal kernel
+* _What's the probability of new players appearing?_, `nu` is the probability that a novel species will appear during a recruitment event.
+* _How long is the game?_, `n.timestep` defines the number of generations
+* _Saving the output_, `sim.ID` provides a name for the simulation, which is saved along with parameter values in the `output.dir.path` directory, which is created in the working directory of the R session. When running multiple simulatinos, you can use a `scenario.ID` to group simulations. All simulations with the same scenario name will have metadata collated in a single .csv fill that will be written out to the `output.dir.path`.
+
+The simulation will create a list which will include the `sim.result.name`, `landscape`, `dat.gamma.t0` (species abundances and trait characteristics at time 0), and `J.long` (community composition at each site at each time step in long format). You can view first few rows of `J.long` with `head(sim.result$J.long)`
+
+```{r}
+print(sim.result$sim.result.name)
+```
+
+Note that a time stamp with the format *yyyymmdd_hhmmss* is appended to the end of the sim result name.
+
+Resulting species counts for each site at each time step are listed in long format:  
+
+```{r}
+head(sim.result$J.long)
+```
+
+***
+# Seeding a simulation with observed data
+***
+## Metacommunity simulation using mite data from the `vegan` package for R
+The `MCSim` package can also be used to create simulation scenarios based on empirical data sets. Here we use the mite data set available in the `vegan` package for R (Oksanen et al. 2020).
+
+Note that the empirical data set that we to seed the simulation includes
+
+* a site by species matrix of species counts (relative abundances also work)
+* a site by environmental variable matrix
+* a matrix of site coordinates
+
+The basic steps to this analysis are:
+
+1. Use the `ade4` package (Chessel et al. 2004) to estimate species' niche positions and niche breadths
+2. Supply the site by species matrix and species traits (defined in step 1) to MCSim functions to seed a simulation. 
+3. Set unknown parameters, such as the dispersal kernel slope (W.r). For example, we could try a range of dispersal kernel slopes to assess the relationship between dispersal kernel shape and metacommunity diversity outcomes. 
+
+***
+### _Here's the code for a metacommunity simulation with species sorting_
+***
+```{r results='hide', cache=TRUE, message=FALSE, warning=FALSE}
+# # -- Packages that need to be installed
+# install.packages(c("ade4",
+#                    "vegan",
+#                    "dplyr",
+#                    "ggplot2"))
+
+library(ade4)
+library(vegan)
+library(dplyr)
+library(ggplot2)
+
+# -------------------------------------------------------------
+# -- Read in empirical data, calculate niches
+# --------------------------
+d.comm <- get(data("mite"))
+
+# Here I'm only using the 10 most abundant mites in the data set
+d.comm <- d.comm[,order(colSums(d.comm), decreasing = TRUE)][,1:10]
+
+# Here I'm only using continuous environemntal variables
+d.env <- scale(get(data("mite.env"))[,c("SubsDens","WatrCont")])
+
+# Here are the xy-coordinates
+d.geo <- get(data("mite.xy"))
+
+# -------------------------------------------------------------
+# -- Make a matrix with site information, useful for plotting later on
+# --------------------------
+d.siteinfo <- data.frame(
+  Site.code = paste0('site',c(1:nrow(d.env))),
+  get(data("mite.env"))
+)
+
+# -- calculate RAs from densities
+d.comm.ra <- d.comm / rowSums(d.comm)
+
+# -- calculate niches for species
+dudi.pca.env <- dudi.pca(d.env, scale = TRUE, scan = FALSE, nf=1)
+niche.species <- niche(dudi.pca.env, Y = d.comm.ra, scann = FALSE)
+d.niche <- data.frame(
+  niche.pos=niche.species$li,
+  as.data.frame(niche.param(niche.species))
+)
+
+# -- calculate niche positions for each of the sites
+d.site.niche  <-  data.frame(
+  d.siteinfo,
+  dudi.pca.env$li
+)
+
+# -- make 1-Dimensional axis for arranging sites in a plot along the environmental gradient
+mod.pca.geo <- princomp(d.geo)
+d.site.1D <- data.frame(
+  site.name = as.character(d.siteinfo$Site.code),
+  region = as.character(d.siteinfo$Topo),
+  pca.score = mod.pca.geo$scores[,1],
+  pca.rank = rank(mod.pca.geo$scores[,1])
+)
+```
+
+The empirical data can be used to characterize the mite species' niche preferences:  
+
+```{r cache=TRUE}
+# -------------------------------------------------------------
+# -- plot the coenoclines, species' niche positions along the environmental gradient
+# -- 
+# -- Note that the "rug" marks along the x-axis denote the sites' locations 
+# -- on the environmental gradient
+# ------------------------
+env.axis <- d.site.niche$Axis1
+
+niche.factor <- .5 #rescale niche breadths
+
+species.niche <- d.niche %>%
+  select(Axis1, Tol) %>%
+  rename(
+    trait.Ef = Axis1,
+    trait.Ef.sd = Tol) %>%
+  mutate(
+    trait.Ef.sd.rescaled = trait.Ef.sd * niche.factor)
+
+# Plot the coenoclines to view species' habitat preferences and niche breadths
+# along the environmental gradient (Ef)
+MCSim::plot.coenoclines(
+  Ef = env.axis,
+  trait.Ef = species.niche$trait.Ef,
+  trait.Ef.sd = species.niche$trait.Ef.sd.rescaled)
+```
+```{r results='hide', cache=TRUE, message=FALSE}
+# -------------------------------------------------------------
+# -- Metacommunity simulation using MCSim
+# -- SCENARIO: Species sorting based on habitat preferences
+# --------------------------
+
+set.seed(1)
+
+# -- make the landscape
+# -- I arbitrarily chose m = 0.05 and JM = 1e6
+simulation.landscape <- MCSim::make.landscape(
+  site.coords = d.geo,
+  Ef = d.site.niche$Axis1,
+  m = 0.5,
+  JM = 1e6)
+
+# -- IMPORTANT NOTE on the simulation
+# -- W.r = 5e6 produces a steep dispersal kernel such that dispersal 
+# --    effectively only occurs between adjacent sites.
+simoutput <- MCSim::metasim(
+  landscape = simulation.landscape,
+  output.dir.path = 'SIM_RESULTS',
+  scenario.ID = 'mites_niche_model',  
+  trait.Ef = species.niche$trait.Ef,
+  trait.Ef.sd = species.niche$trait.Ef.sd.rescaled,
+  J.t0 = d.comm.ra,
+  n.timestep = 100,
+  W.r = 5e6,
+  nu = 0,
+  speciation.limit = 0,
+  save.sim = FALSE
+)
+
+# plot dot plots
+MCSim::plot.dot.plots(simoutput)
+```
+
+**_Conclusions._** Given these model parameters for a species sorting scenario, local communities become dominated by taxa with matching habitat preferences after 100 generations.
+
+***
+### _Here's the code for a neutral metacommunity simulation_
+***
+```{r results='hide', cache=TRUE}
+# -------------------------------------------------------------
+# -- Metacommunity simulation using MCSim
+# -- SCENARIO: Neutral community model with limited dispersal
+# --------------------------
+set.seed(1)
+
+# -- make the landscape
+# -- I arbitrarily chose m = 0.05 and JM = 1e6
+simulation.landscape <- MCSim::make.landscape(
+  site.coords = d.geo,
+  Ef = d.site.niche$Axis1,
+  m = 0.5,
+  JM = 1e6)
+
+# -- IMPORTANT NOTES on the simulation
+# -- 1. multiplying niche breadths (trait.Ef.sd) by 1000 effectively makes 
+# --    the simulation neutral
+# -- 2. W.r = 5e6 produces a steep dispersal kernel such that dispersal 
+# --    effectively only occurs between adjacent sites.
+simoutput<-MCSim::metasim(
+  landscape = simulation.landscape,
+  output.dir.path = 'SIM_RESULTS',
+  scenario.ID = 'mites_neutral_model',  
+  trait.Ef = species.niche$trait.Ef,
+  trait.Ef.sd = 1000 * (species.niche$trait.Ef),
+  J.t0 = d.comm.ra,
+  n.timestep = 100,
+  W.r = 5e6,
+  nu = 0,
+  speciation.limit = 0,
+  save.sim = FALSE
+)
+
+# plot dot plots
+MCSim::plot.dot.plots(simoutput)
+```
+
+**_Conclusions._** Given these model parameters for the neutral model simulation scenario, metacommunity composition remains relatively stable over 100 generations.
+
+***
+# References
+***
+Chessel, D., A. B. Dufour, and J. Thioulouse. 2004. The ade4 package-I-One-table methods. R news 4:5–10.
+
+Hubbell, S. P. 2001. A unified theory of biodiversity and biogeography. Princeton University Press.
+
+Leibold, M. A., M. Holyoak, N. Mouquet, P. Amarasekare, J. M. Chase, M. F. Hoopes, R. D. Holt, J. B. Shurin, R. Law, D. Tilman, M. Loreau, and A. Gonzalez. 2004. The metacommunity concept: a framework for multi-scale community ecology. Ecology Letters 7:601–613.
+
+Oksanen, J., F. G. Blanchet, R. Kindt, P. Legendre, P. R. Minchin, R. B. O’Hara, G. L. Simpson, P. Solymos, M. H. H. Stevens, and H. Wagner. 2020. vegan: Community Ecology Package. v2.3-3.
+
+Sokol, E. R., B. L. Brown, C. C. Carey, B. M. Tornwall, C. M. Swan, and J. E. Barrett. 2015. Linking management to biodiversity in built ponds using metacommunity simulations. Ecological Modelling 296:36–45. ([link](http://dx.doi.org/10.1016/j.ecolmodel.2014.10.022))
+
+Wickham, H., and W. Chang. 2016. devtools: Tools to Make Developing R Packages Easier. [https://CRAN.R-project.org/package=devtools](https://CRAN.R-project.org/package=devtools).

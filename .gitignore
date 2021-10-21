@@ -8,3 +8,4 @@
 /my_sim_output_directory/*
 **/SIM_OUTPUT/*
 **/my_sim_output_directory/*
+inst/doc

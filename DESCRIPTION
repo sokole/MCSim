@@ -17,3 +17,7 @@ Imports:
     reshape2,
     tibble,
     ggplot2
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
