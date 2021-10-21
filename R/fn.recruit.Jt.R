@@ -101,17 +101,21 @@ fn.recruit.Jt <- function(
   # -- all species that have 0 regional RA at time t-1 are assigned a non-zero probability of recruitment,
   # which is nu / (count of unobserved species in the list).  A "speciation event" in this simulation is 
   # recruitment of a previously unobserved species. 
-  unobserved.spp.count <- sum(colSums(R.t)==0)
-  speciation.recruitment.prob <- ifelse(
-    unobserved.spp.count == 0,
-    0,
-    nu / unobserved.spp.count)
+  
+  # unobserved.spp.count <- sum(colSums(R.t)==0)
+  # speciation.recruitment.prob <- ifelse(
+  #   unobserved.spp.count == 0,
+  #   0,
+  #   nu / unobserved.spp.count)
+  speciation.recruitment.prob <- nu/ncol(J.t.minus.1)
+  
   
   # -- alter all the probabilities accordingly, all rows must add to 1
-  mat.nu <- R.t
-  mat.nu[,colSums(mat.nu)>0] <- mat.nu[,colSums(mat.nu)>0] * (1-nu)
-  mat.nu[,colSums(mat.nu)==0] <- speciation.recruitment.prob
-  R.t.probs <- mat.nu
+  # mat.nu <- R.t
+  # mat.nu[,colSums(mat.nu)>0] <- mat.nu[,colSums(mat.nu)>0] * (1-nu)
+  # mat.nu[,colSums(mat.nu)==0] <- speciation.recruitment.prob
+  # R.t.probs <- mat.nu
+  R.t.probs <- speciation.recruitment.prob + (R.t * (1-nu))
   
   # -- Local environmental filtering
   d.temp <- expand.grid(
