@@ -1,37 +1,30 @@
-## Welcome to GitHub Pages
+MCSim
+=====
+#### An R package for metacommunity simulations and functions to calculate biodiversity metrics  
+MCSim is a package for R that can be used to design lottery-based simulations of metacommunities, which can be used to test assumptions about how metacommunity dynamics influence emergent biodiversity patterns. See my paper in Ecological Modelling ([link](http://www.sciencedirect.com/science/article/pii/S0304380014004918)), which uses MCSim [v0.3](https://github.com/sokole/MCSim/releases/tag/v0.3). In [v0.4.2](https://github.com/sokole/MCSim/releases/tag/v0.4.2), users can make use of igraph to design network topology and seed simulations with observed data. Most recently, [v0.4.9](https://github.com/sokole/MCSim/tree/v0.4.9) provides users control over temporal variability in the landscape as well as some new plotting functions. [v0.5.0](https://github.com/sokole/MCSim/releases/tag/v0.5.0) provides plotting functions and an intro vignette ("MCSim-intro"). Please find the current version under development at https://github.com/sokole/MCSim.   
 
-You can use the [editor on GitHub](https://github.com/sokole/MCSim/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+#### Tutorials
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+* [An introduction to metacommunity simulations (MCSim) for R](https://rpubs.com/sokole/MCSim-intro)
+* [Modeling disturbance with metacommunity simulations (MCSim)](https://rpubs.com/sokole/MCSim-disturbance)
+* [Exploring species area relationships with MetaCommunity Simulations (MCSim)](https://rpubs.com/sokole/MCSim-SARs) - still in development
 
-### Markdown
+#### Useful links and related projects
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+* [MCSim details, news, and tutorials](https://sites.google.com/site/metacommunitysimulation/)
+* [Application of metacommunity simulations at the McMurdo Dry Valleys LTER](http://mcm.lternet.edu/content/metacommunity-dynamics-simulations-diatoms-antarctic-ponds)
+* [The LTER Metacommunities Working Group project page](https://sites.google.com/site/ltermetacommunities/home)
+* [LTER Metacommunities on github](https://github.com/sokole/ltermetacommunities/)
 
-```markdown
-Syntax highlighted code block
+Please feel free to email me with questions, suggestions, etc.  
+#### Eric R. Sokol  
+sokole@gmail.com
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+#### How to install MCSim
 ```
+# Install without vignette(s)
+remotes::install_github("sokole/MCSim")
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/sokole/MCSim/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+# Install with vignette(s)
+remotes::install_github("sokole/MCSim", build_vignettes = TRUE)
+```
