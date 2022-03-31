@@ -59,10 +59,10 @@ plot.dot.plots <- function(
   
   if("landscape" %in% names(sim.result)){
     site.info <- sim.result$landscape$site.info %>%
-      dplyr::mutate(Ef.rank = rank(.data$Ef))
+      dplyr::mutate(Ef.rank = rank(.data$Ef,ties.method = "first"))
   }else if("landscape.list" %in% names(sim.result)){
     site.info <- sim.result$landscape.list[[1]]$site.info %>%
-      dplyr::mutate(Ef.rank = rank(.data$Ef))
+      dplyr::mutate(Ef.rank = rank(.data$Ef,ties.method = "first"))
     message("WARNING: this sim result includes a changing landscape, this plotting function is has not been optimized for changing landscapes and the plot will be based on the initial landscape configuration")
   }
   
@@ -73,10 +73,10 @@ plot.dot.plots <- function(
   
   if("dat.gamma.t0" %in% names(sim.result)){
     spp.info <- sim.result$dat.gamma.t0 %>%
-      dplyr::mutate(trait.rank = rank(trait.Ef))
+      dplyr::mutate(trait.rank = rank(trait.Ef,ties.method = "first"))
   }else if("dat.gamma.t0.list" %in% names(sim.result)){
     spp.info <- sim.result$dat.gamma.t0.list[[1]]$dat.gamma.t0 %>%
-      dplyr::mutate(trait.rank = rank(.data$trait.Ef))
+      dplyr::mutate(trait.rank = rank(.data$trait.Ef,ties.method = "first"))
   }
 
   
@@ -90,7 +90,7 @@ plot.dot.plots <- function(
       dplyr::group_by(.data$spp) %>% 
       dplyr::summarize(max.RA = max(.data$RA),
                        spp.no = .data$spp.no[1],
-                       trait_rank = .data$trait.rank[1]))
+                       trait.rank = .data$trait.rank[1]))
   
   # -- only label species with RAs over 0.40
   spp.labels <- dplyr::filter(d.spp.RAs, max.RA >= spp.label.threshold.RA)
@@ -102,6 +102,8 @@ plot.dot.plots <- function(
       as.factor(.data$trait.rank), 
       as.factor(.data$Ef.rank), 
       size = .data$RA))
+  
+  browser()
   
   p <- p + 
     ggplot2::geom_point() + 

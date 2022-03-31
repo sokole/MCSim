@@ -160,8 +160,35 @@ sim.result$dat.gamma.t0
 
 
 
+#####################################################
+#####################################################
+# TEST 4 -- plotting dot plots with site ties -- should 
+# see four sites on x-axis
 
+xy.coordinates <- data.frame(
+  x = c(1, 2, 3, 4, 5),
+  y = c(1, 3, 1, 5, 2))
 
+my.landscape <- MCSim::make.landscape(
+  site.coords = xy.coordinates,
+  m = 0.5,
+  JM = 1000000)
 
+# niche positions, niche breadths, and relative abundances for three species
+niche.positions <-  c(-.5, 0, .5)
+niche.breadths <- c(.2, .2, 5)
+regional.rel.abund <- c(.8, .1, .1)
 
+# run a simulation with 10 generations
+sim.result <- MCSim::metasim(
+  landscape = my.landscape,
+  trait.Ef = niche.positions,
+  trait.Ef.sd = niche.breadths, 
+  gamma.abund = regional.rel.abund,
+  W.r = 0,
+  nu = 0,
+  n.timestep = 10)
+
+# plot dot plots
+plot.dot.plots(sim.result)
 
