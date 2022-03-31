@@ -55,8 +55,7 @@ plot.dot.plots <- function(
   # extract site info from the landscape object
   # rank sites locations along the env gradient
   
-  # browser()
-  
+
   if("landscape" %in% names(sim.result)){
     site.info <- sim.result$landscape$site.info %>%
       dplyr::mutate(Ef.rank = rank(.data$Ef,ties.method = "first"))
@@ -92,8 +91,15 @@ plot.dot.plots <- function(
                        spp.no = .data$spp.no[1],
                        trait.rank = .data$trait.rank[1]))
   
+  
+  d.site.ranks <- J.RAs.long %>% 
+    dplyr::select(.data$site, .data$Ef.rank) %>%
+    dplyr::distinct() %>%
+    as.data.frame()
+  
   # -- only label species with RAs over 0.40
   spp.labels <- dplyr::filter(d.spp.RAs, max.RA >= spp.label.threshold.RA)
+  
   
   # -- make plot
   p <- ggplot2::ggplot(
@@ -118,6 +124,9 @@ plot.dot.plots <- function(
     ggplot2::scale_x_discrete(
       breaks = spp.labels$trait.rank,
       labels = spp.labels$spp) +
+    ggplot2::scale_y_discrete(
+      breaks = d.site.ranks$Ef.rank,
+      labels = d.site.ranks$site) +
     ggplot2::theme_bw() +
     ggplot2::coord_flip()
   
