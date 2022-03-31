@@ -27,4 +27,10 @@ remotes::install_github("sokole/MCSim")
 
 # Install with vignette(s)
 remotes::install_github("sokole/MCSim", build_vignettes = TRUE)
+
+# view available vignette(s)
+vignette(package="MCSim")
+
+# view the intro vignette
+vignette("MCSim-intro")
 ```
