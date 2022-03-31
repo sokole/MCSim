@@ -6,7 +6,7 @@ Description: This package contains functions for lottery sampling type
     metacommunity simulations.
 License: GPL-3
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     stats,
     graphics,
