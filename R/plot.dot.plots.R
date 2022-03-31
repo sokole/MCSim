@@ -103,8 +103,6 @@ plot.dot.plots <- function(
       as.factor(.data$Ef.rank), 
       size = .data$RA))
   
-  browser()
-  
   p <- p + 
     ggplot2::geom_point() + 
     ggplot2::facet_grid(. ~ .data$timestep) +
